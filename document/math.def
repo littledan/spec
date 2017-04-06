@@ -233,6 +233,11 @@
 .. |DEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{demote}}
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
+.. |TRAP| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{trap}}
+.. |LABEL| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{label}}
+.. |LOCAL| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{local}}
+.. |INVOKE| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{invoke}}
+
 
 .. Instructions, non-terminals
 
@@ -251,10 +256,10 @@
 
 .. Store, terminals
 
-.. |INST| mathdef:: \xref{execution/conventions}{syntax-funcinst}{\K{inst}}
+.. |INST| mathdef:: \K{inst}
 
-.. |INSTS| mathdef:: \xref{execution/conventions}{syntax-store}{\K{insts}}
-.. |ELEMS| mathdef:: \xref{execution/conventions}{syntax-tableinst}{\K{elems}}
+.. |INSTS| mathdef:: \K{insts}
+.. |ELEMS| mathdef:: \K{elems}
 
 
 .. Store, non-terminals
@@ -272,3 +277,11 @@
 .. |funcelem| mathdef:: \xref{execution/conventions}{syntax-funcelem}{\X{funcelem}}
 .. |meminst| mathdef:: \xref{execution/conventions}{syntax-meminst}{\X{meminst}}
 .. |globalinst| mathdef:: \xref{execution/conventions}{syntax-globalinst}{\X{globalinst}}
+
+.. |store| mathdef:: \xref{execution/conventions}{syntax-store}{\X{store}}
+.. |frame| mathdef:: \xref{execution/conventions}{syntax-frame}{\X{frame}}
+
+
+.. Execution, notation
+
+.. |evalto| mathdef:: \quad\hookrightarrow\quad

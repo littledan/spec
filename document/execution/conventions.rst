@@ -34,6 +34,10 @@ Addresses
      \addr \\
    \end{array}
 
+.. note::
+   A *memory address* denotes the abstract address *of* a memory instance in the store,
+   *not* an offset *in* a memory instance.
+
 
 .. _syntax-moduleinst:
 .. index:: ! instance
@@ -45,7 +49,8 @@ Module Instances
    \begin{array}{llll}
    \production{(module instance)} & \moduleinst &::=&
      \begin{array}[t]{l@{~}ll}
-     \{ & \FUNCS & \funcinst^\ast, \\
+     \{ & \TYPES & \functype^\ast, \\
+        & \FUNCS & \funcinst^\ast, \\
         & \TABLES & \tableaddr^\ast, \\
         & \MEMS & \memaddr^\ast, \\
         & \GLOBALS & \globaladdr^\ast ~\} \\
@@ -76,7 +81,7 @@ Table Instances
 .. math::
    \begin{array}{llll}
    \production{(table instance)} & \tableinst &::=&
-     \{ \ELEM~(\funcelem^?)^\ast, \MAX~\u32 \} \\
+     \{ \ELEM~(\func^?)^\ast, \MAX~\u32 \} \\
    \end{array}
 
 
@@ -109,9 +114,6 @@ Global Instances
 
 .. _store:
 .. _syntax-store:
-.. _syntax-tableinst:
-.. _syntax-meminst:
-.. _syntax-globalinst:
 .. index:: ! store
 
 Store
@@ -119,13 +121,41 @@ Store
 
 .. math::
    \begin{array}{llll}
-   \production{(store)} & S &::=&
+   \production{(store)} & \store &::=&
      \begin{array}[t]{l@{~}ll}
      \{ & \TABLES & \tableinst^\ast, \\
         & \MEMS & \meminst^\ast, \\
         & \GLOBALS & \globalinst^\ast ~\} \\
      \end{array}
    \end{array}
+
+Convention
+..........
+
+* The meta variable :math:`S` ranges over stores where clear from context.
+
+
+.. _frame:
+.. _syntax-frame:
+.. index:: ! frame
+
+Frame
+~~~~~
+
+.. math::
+   \begin{array}{llll}
+   \production{(store)} & \frame &::=&
+     \begin{array}[t]{l@{~}ll}
+     \{ & \INST & \moduleinst, \\
+        & \STORE & \store, \\
+        & \LOCALS & \val^\ast ~\} \\
+     \end{array}
+   \end{array}
+
+Convention
+..........
+
+* The meta variable :math:`F` ranges over frames where clear from context.
 
 
 Textual Notation

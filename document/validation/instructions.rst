@@ -128,7 +128,7 @@ In this section, the following grammar shorthands are adopted:
 
 .. _valid-const:
 
-:math:`t \K{.const}~c`
+:math:`t\K{.}\CONST~c`
 ......................
 
 * The instruction is valid with type :math:`[] \to [t]`.
@@ -365,8 +365,8 @@ Memory Instructions
 
 .. _valid-load:
 
-:math:`t\K{.load}~\memarg`
-..........................
+:math:`t\K{.}\LOAD~\memarg`
+...........................
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
@@ -386,8 +386,8 @@ Memory Instructions
 
 .. _valid-loadn:
 
-:math:`t\K{.load}N\K{\_}\sx~\memarg`
-....................................
+:math:`t\K{.}\LOAD{N}\K{\_}\sx~\memarg`
+.......................................
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
@@ -407,8 +407,8 @@ Memory Instructions
 
 .. _valid-store:
 
-:math:`t\K{.store}~\memarg`
-...........................
+:math:`t\K{.}\STORE~\memarg`
+............................
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
@@ -428,8 +428,8 @@ Memory Instructions
 
 .. _valid-storen:
 
-:math:`t\K{.store}N~\memarg`
-............................
+:math:`t\K{.}\STORE{N}~\memarg`
+...............................
 
 * The memory :math:`C.\MEMS[0]` must be defined in the context.
 
@@ -537,7 +537,7 @@ Control Instructions
    \frac{
      C,\LABELS\,[t^?] \vdash \instr^\ast : [] \to [t^?]
    }{
-     C \vdash \BLOCK~[^?]~\instr^\ast~\END : [] \to [t^?]
+     C \vdash \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
    }
 
 .. note::
