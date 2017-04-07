@@ -103,14 +103,14 @@ In this section, the following grammar shorthands are adopted:
    \frac{
      \unop_t(c_1) = c
    }{
-     (t\K{.}\CONST~c_1)~t\K{.}\unop \evalto (t\K{.}\CONST~c)
+     (t\K{.}\CONST~c_1)~t\K{.}\unop \stepto (t\K{.}\CONST~c)
    }
 
 .. math::
    \frac{
      \unop_t(c_1) = \bot
    }{
-     (t\K{.}\CONST~c_1)~t\K{.}\unop \evalto \TRAP
+     (t\K{.}\CONST~c_1)~t\K{.}\unop \stepto \TRAP
    }
 
 
@@ -141,14 +141,14 @@ In this section, the following grammar shorthands are adopted:
    \frac{
      \binop_t(c_1, c_2) = c
    }{
-     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop \evalto (t\K{.}\CONST~c)
+     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop \stepto (t\K{.}\CONST~c)
    }
 
 .. math::
    \frac{
      \binop_t(c_1, c_2) = \bot
    }{
-     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop \evalto \TRAP
+     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop \stepto \TRAP
    }
 
 
@@ -169,7 +169,7 @@ In this section, the following grammar shorthands are adopted:
    \frac{
      \testop_t(c_1) = c
    }{
-     (t\K{.}\CONST~c_1)~t\K{.}\testop \evalto (\I32\K{.}\CONST~c)
+     (t\K{.}\CONST~c_1)~t\K{.}\testop \stepto (\I32\K{.}\CONST~c)
    }
 
 
@@ -194,7 +194,7 @@ In this section, the following grammar shorthands are adopted:
    \frac{
      \relop_t(c_1, c_2) = c
    }{
-     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop \evalto (\I32\K{.}\CONST~c)
+     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop \stepto (\I32\K{.}\CONST~c)
    }
 
 
@@ -221,14 +221,14 @@ In this section, the following grammar shorthands are adopted:
    \frac{
      \cvtop_{t_1,t_2}(c_1) = c_2
    }{
-     (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop/t_1 \evalto (t_2\K{.}\CONST~c_2)
+     (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop/t_1 \stepto (t_2\K{.}\CONST~c_2)
    }
 
 .. math::
    \frac{
      \cvtop_{t_1,t_2}(c_1) = \bot
    }{
-     (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop/t_1 \evalto \TRAP
+     (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop/t_1 \stepto \TRAP
    }
 
 
@@ -250,7 +250,7 @@ Parametric Instructions
 .. math::
    \frac{
    }{
-     v~\DROP \evalto \epsilon
+     v~\DROP \stepto \epsilon
    }
 
 
@@ -281,14 +281,14 @@ Parametric Instructions
    \frac{
      n \neq 0
    }{
-     v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT \evalto v_1
+     v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT \stepto v_1
    }
 
 .. math::
    \frac{
      n = 0
    }{
-     v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT \evalto v_2
+     v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT \stepto v_2
    }
 
 
@@ -315,7 +315,7 @@ Variable Instructions
    \frac{
      F.\LOCALS[x] = v
    }{
-     F; (\GETLOCAL~x) \evalto F; v
+     F; (\GETLOCAL~x) \stepto F; v
    }
 
 
@@ -336,7 +336,7 @@ Variable Instructions
    \frac{
      F' = F~\mbox{with}~\LOCALS[x] = v
    }{
-     F; v~(\SETLOCAL~x) \evalto F'; \epsilon
+     F; v~(\SETLOCAL~x) \stepto F'; \epsilon
    }
 
 
@@ -356,7 +356,7 @@ Variable Instructions
 .. math::
    \frac{
    }{
-     F; v~(\TEELOCAL~x) \evalto F'; v~v~(\SETLOCAL~x)
+     F; v~(\TEELOCAL~x) \stepto F'; v~v~(\SETLOCAL~x)
    }
 
 
@@ -381,7 +381,7 @@ Variable Instructions
    \frac{
      S.\GLOBALS[F.\INST.\GLOBALS[x]].\VALUE = v
    }{
-     S; F; (\GETGLOBAL~x) \evalto S; F; v
+     S; F; (\GETGLOBAL~x) \stepto S; F; v
    }
 
 
@@ -408,7 +408,7 @@ Variable Instructions
    \frac{
      S' = S~\mbox{with}~\GLOBALS[F.\INST.\GLOBALS[x]].\VALUE = v
    }{
-     S; F; v~(\GETGLOBAL~x) \evalto S'; F; \epsilon
+     S; F; v~(\GETGLOBAL~x) \stepto S'; F; \epsilon
    }
 
 
@@ -460,7 +460,7 @@ Memory Instructions
      \qquad
      \X{ea} + |t| > |S.\MEMS[F.\INST.\MEMS[0]].\DATA|
    }{
-     S; F; (\I32.\CONST~k)~t.\LOAD~\memarg \evalto S; F; \TRAP
+     S; F; (\I32.\CONST~k)~t.\LOAD~\memarg \stepto S; F; \TRAP
    }
 
 .. math::
@@ -471,7 +471,7 @@ Memory Instructions
      \qquad
      b^\ast = S.\MEMS[F.\INST.\MEMS[0]].\DATA[\X{ea}:\X{ea}+|t|]
    }{
-     S; F; (\I32.\CONST~k)~t.\LOAD~\memarg \evalto S; F; (t.\CONST~\ofbits_t(b^\ast))
+     S; F; (\I32.\CONST~k)~t.\LOAD~\memarg \stepto S; F; (t.\CONST~\ofbits_t(b^\ast))
    }
 
 .. note::
@@ -521,7 +521,7 @@ Memory Instructions
      \qquad
      \X{ea} + N > |S.\MEMS[F.\INST.\MEMS[0]].\DATA|
    }{
-     S; F; (\I32.\CONST~k)~t.\LOAD~\memarg \evalto S; F; \TRAP
+     S; F; (\I32.\CONST~k)~t.\LOAD~\memarg \stepto S; F; \TRAP
    }
 
 .. math::
@@ -532,7 +532,7 @@ Memory Instructions
      \qquad
      b^\ast = S.\MEMS[F.\INST.\MEMS[0]].\DATA[\X{ea}:\X{ea}+N]
    }{
-     S; F; (\I32.\CONST~k)~t.\LOAD{N}\K{\_}\sx~\memarg \evalto S; F; (t.\CONST~\extend_{N,|t|,\sx}(\ofbits_t(b^\ast)))
+     S; F; (\I32.\CONST~k)~t.\LOAD{N}\K{\_}\sx~\memarg \stepto S; F; (t.\CONST~\extend_{N,|t|,\sx}(\ofbits_t(b^\ast)))
    }
 
 
@@ -577,7 +577,7 @@ Memory Instructions
      \qquad
      \X{ea} + |t| > |S.\MEMS[F.\INST.\MEMS[0]].\DATA|
    }{
-     S; F; (t.\CONST~c)~(\I32.\CONST~k)~t.\STORE~\memarg \evalto S; F; \TRAP
+     S; F; (t.\CONST~c)~(\I32.\CONST~k)~t.\STORE~\memarg \stepto S; F; \TRAP
    }
 
 .. math::
@@ -588,7 +588,7 @@ Memory Instructions
      \qquad
      S' = S~\mbox{with}~\MEMS[F.\INST.\MEMS[0]].\DATA[\X{ea}:\X{ea}+|t|] = \tobits_t(c)
    }{
-     S; F; (t.\CONST~c)~(\I32.\CONST~k)~t.\STORE~\memarg \evalto S'; F; \epsilon
+     S; F; (t.\CONST~c)~(\I32.\CONST~k)~t.\STORE~\memarg \stepto S'; F; \epsilon
    }
 
 
@@ -635,7 +635,7 @@ Memory Instructions
      \qquad
      \X{ea} + N > |S.\MEMS[F.\INST.\MEMS[0]].\DATA|
    }{
-     S; F; (t.\CONST~c)~(\I32.\CONST~k)~t.\STORE{N}~\memarg \evalto S; F; \TRAP
+     S; F; (t.\CONST~c)~(\I32.\CONST~k)~t.\STORE{N}~\memarg \stepto S; F; \TRAP
    }
 
 .. math::
@@ -646,7 +646,7 @@ Memory Instructions
      \qquad
      S' = S~\mbox{with}~\MEMS[F.\INST.\MEMS[0]].\DATA[\X{ea}:\X{ea}+N] = \tobits_t(\wrap_N(c))
    }{
-     S; F; (t.\CONST~c)~(\I32.\CONST~k)~t.\STORE{N}~\memarg \evalto S'; F; \epsilon
+     S; F; (t.\CONST~c)~(\I32.\CONST~k)~t.\STORE{N}~\memarg \stepto S'; F; \epsilon
    }
 
 
@@ -671,7 +671,7 @@ Memory Instructions
    \frac{
      |S.\MEMS[F.\INST.\MEMS[0]].\DATA| = \X{sz}\cdot64\,\F{Ki}
    }{
-     S; F; \CURRENTMEMORY \evalto S; F; (\I32.\CONST~\X{sz})
+     S; F; \CURRENTMEMORY \stepto S; F; (\I32.\CONST~\X{sz})
    }
 
 
@@ -722,7 +722,7 @@ Memory Instructions
      \qquad
      S' = S~\mbox{with}~\MEMS[a].\DATA = S.\MEMS[a].\DATA~(\hex{00})^{\uint(n)\cdot64\,\F{Ki}}
    }{
-     S; F; (\I32.\CONST~n)~\GROWMEMORY \evalto S'; F; (\I32.\CONST~\X{sz})
+     S; F; (\I32.\CONST~n)~\GROWMEMORY \stepto S'; F; (\I32.\CONST~\X{sz})
    }
 
 .. math::
@@ -733,13 +733,13 @@ Memory Instructions
      \qquad
      \X{sz} + \uint(n) > S.\MEMS[a].\MAX
    }{
-     S; F; (\I32.\CONST~n)~\GROWMEMORY \evalto S'; F; (\I32.\CONST~{-1})
+     S; F; (\I32.\CONST~n)~\GROWMEMORY \stepto S'; F; (\I32.\CONST~{-1})
    }
 
 .. math::
    \frac{
    }{
-     S; F; (\I32.\CONST~n)~\GROWMEMORY \evalto S'; F; (\I32.\CONST~{-1})
+     S; F; (\I32.\CONST~n)~\GROWMEMORY \stepto S'; F; (\I32.\CONST~{-1})
    }
 
 .. note::
@@ -770,7 +770,7 @@ Control Instructions
 .. math::
    \frac{
    }{
-     \NOP \evalto \epsilon
+     \NOP \stepto \epsilon
    }
 
 
@@ -784,7 +784,7 @@ Control Instructions
 .. math::
    \frac{
    }{
-     \UNREACHABLE \evalto \TRAP
+     \UNREACHABLE \stepto \TRAP
    }
 
 
@@ -800,7 +800,7 @@ Control Instructions
 .. math::
    \frac{
    }{
-     \BLOCK~[t^?]~\instr^\ast~\END \evalto \LABEL_\epsilon~[t^?]~\instr^\ast~\END
+     \BLOCK~[t^?]~\instr^\ast~\END \stepto \LABEL_\epsilon~[t^?]~\instr^\ast~\END
    }
 
 
@@ -816,7 +816,7 @@ Control Instructions
 .. math::
    \frac{
    }{
-     \LOOP~[t^?]~\instr^\ast~\END \evalto \LABEL_{\LOOP~[t^?]~\instr^\ast~\END}~[t^?]~\instr^\ast~\END
+     \LOOP~[t^?]~\instr^\ast~\END \stepto \LABEL_{\LOOP~[t^?]~\instr^\ast~\END}~[t^?]~\instr^\ast~\END
    }
 
 
@@ -841,14 +841,14 @@ Control Instructions
    \frac{
      n \neq 0
    }{
-     (\I32.\CONST~n)~\IF~[t^?]~\instr_1^\ast~\END \evalto \BLOCK~[t^?]~\instr_1^\ast~\END
+     (\I32.\CONST~n)~\IF~[t^?]~\instr_1^\ast~\END \stepto \BLOCK~[t^?]~\instr_1^\ast~\END
    }
 
 .. math::
    \frac{
      n = 0
    }{
-     (\I32.\CONST~n)~\IF~[t^?]~\instr_2^\ast~\END \evalto \BLOCK~[t^?]~\instr_2^\ast~\END
+     (\I32.\CONST~n)~\IF~[t^?]~\instr_2^\ast~\END \stepto \BLOCK~[t^?]~\instr_2^\ast~\END
    }
 
 
@@ -883,14 +883,14 @@ Control Instructions
    \frac{
      n \neq 0
    }{
-     (\I32.\CONST~n)~(\BRIF~l) \evalto (\BR~l)
+     (\I32.\CONST~n)~(\BRIF~l) \stepto (\BR~l)
    }
 
 .. math::
    \frac{
      n = 0
    }{
-     (\I32.\CONST~n)~(\BRIF~l) \evalto \epsilon
+     (\I32.\CONST~n)~(\BRIF~l) \stepto \epsilon
    }
 
 
@@ -919,14 +919,14 @@ Control Instructions
    \frac{
      l^\ast[\uint(i)] = l_i
    }{
-     (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) \evalto (\BR~l_i)
+     (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) \stepto (\BR~l_i)
    }
 
 .. math::
    \frac{
      |l^\ast| \leq \uint(i)
    }{
-     (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) \evalto (\BR~l_N)
+     (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) \stepto (\BR~l_N)
    }
 
 
@@ -947,7 +947,7 @@ Control Instructions
    \frac{
      C.\LABELS[|C.\LABELS|-1] = [t^?]
    }{
-     \RETURN \evalto (\BR~)
+     \RETURN \stepto (\BR~)
    }
 
 .. note::
@@ -1013,14 +1013,14 @@ Control Instructions
    \frac{
      |S.\TABLES[F.\INST.\TABLES[0]].\ELEM| \leq \uint(i)
    }{
-     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \evalto S; F; \TRAP
+     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \stepto S; F; \TRAP
    }
 
 .. math::
    \frac{
      S.\TABLES[F.\INST.\TABLES[0]].\ELEM[\uint(i)] = \epsilon
    }{
-     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \evalto S; F; \TRAP
+     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \stepto S; F; \TRAP
    }
 
 .. math::
@@ -1029,7 +1029,7 @@ Control Instructions
      \qquad
      F.\INST.\TYPES[x] \neq f.\INST.\TYPES[f.\TYPE]
    }{
-     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \evalto S; F; \TRAP
+     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \stepto S; F; \TRAP
    }
 
 .. math::
@@ -1038,7 +1038,7 @@ Control Instructions
      \qquad
      F.\INST.\TYPES[x] = f.\INST.\TYPES[f.\TYPE]
    }{
-     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \evalto S; F; (\INVOKE~f)
+     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \stepto S; F; (\INVOKE~f)
    }
 
 
@@ -1115,7 +1115,7 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 
 .. math::
    \frac{
-     C \vdash \instr^\ast : [] \to [t^?]
+     S; F; \instr^\ast \stepto^\ast S; F; v
    }{
-     C \vdash \instr^\ast~\END : [t^?]
+     S; F; \instr^\ast~\END \stepto^\ast v
    }

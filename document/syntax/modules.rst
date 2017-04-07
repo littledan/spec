@@ -314,6 +314,20 @@ which are referenced through a respective descriptor.
    In the current version of WebAssembly, only *immutable* globals may be exported.
 
 
+Conventions
+...........
+
+The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:
+
+* :math:`\funcs(\export^\ast) = [\funcidx ~|~ \FUNC~\funcidx \in (\export.\DESC)^\ast]`
+
+* :math:`\tables(\export^\ast) = [\tableidx ~|~ \TABLE~\tableidx \in (\export.\DESC)^\ast]`
+
+* :math:`\mems(\export^\ast) = [\memidx ~|~ \MEM~\memidx \in (\export.\DESC)^\ast]`
+
+* :math:`\globals(\export^\ast) = [\globalidx ~|~ \GLOBAL~\globalidx \in (\export.\DESC)^\ast]`
+
+
 .. _syntax-import:
 .. index:: ! import, name, function type, table type, memory type, global type, index, index space, type index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; import

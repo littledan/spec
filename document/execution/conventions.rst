@@ -47,13 +47,14 @@ Module Instances
 
 .. math::
    \begin{array}{llll}
-   \production{(module instance)} & \moduleinst &::=&
+   \production{(module instance)} & \moduleinst &::=& \{
      \begin{array}[t]{l@{~}ll}
-     \{ & \TYPES & \functype^\ast, \\
-        & \FUNCS & \funcinst^\ast, \\
-        & \TABLES & \tableaddr^\ast, \\
-        & \MEMS & \memaddr^\ast, \\
-        & \GLOBALS & \globaladdr^\ast ~\} \\
+     \TYPES & \functype^\ast, \\
+     \FUNCS & \funcinst^\ast, \\
+     \TABLES & \tableaddr^\ast, \\
+     \MEMS & \memaddr^\ast, \\
+     \GLOBALS & \globaladdr^\ast \\
+     \EXPORTS & \externval^\ast ~\} \\
      \end{array}
    \end{array}
 
@@ -67,7 +68,7 @@ Function Instances
 .. math::
    \begin{array}{llll}
    \production{(function instance)} & \funcinst &::=&
-     \{ \INST~\moduleinst, \FUNC~\func \} \\
+     \{ \MODULE~\moduleinst, \FUNC~\func \} \\
    \end{array}
 
 
@@ -112,6 +113,85 @@ Global Instances
    \end{array}
 
 
+.. _syntax-exportinst:
+.. index:: ! export instance, name, external value
+
+Export Instances
+~~~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llll}
+   \production{(export instance)} & \exportinst &::=&
+     \{ \NAME~\name, \VALUE~\externval \} \\
+   \end{array}
+
+
+.. _syntax-externval:
+.. index:: ! external value, function instance, table address, memory address, global address
+   pair: abstract syntax; external value
+   pair: external; value
+
+External Values
+~~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llll}
+   \production{(external value)} & \externval &::=&
+     \FUNC~\funcinst ~|~
+     \TABLE~\tableaddr ~|~
+     \MEM~\memaddr ~|~
+     \GLOBAL~\globaladdr \\
+   \end{array}
+
+
+Conventions
+...........
+
+The following auxiliary notation is defined for sequences of external values, filtering out entries of a specific kind in an order-preserving fashion:
+
+* :math:`\funcs(\externval^\ast) = [\funcinst ~|~ \FUNC~\funcinst \in \externval^\ast]`
+
+* :math:`\tables(\externval^\ast) = [\tableaddr ~|~ \TABLE~\tableaddr \in \externval^\ast]`
+
+* :math:`\mems(\externval^\ast) = [\memaddr ~|~ \MEM~\memaddr \in \externval^\ast]`
+
+* :math:`\globals(\externval^\ast) = [\globaladdr ~|~ \GLOBAL~\globaladdr \in \externval^\ast]`
+
+
+.. _syntax-externtype:
+.. index:: ! external type, function type, table type, memory type, global type
+   pair: abstract syntax; external type
+   pair: external; type
+
+External Types
+~~~~~~~~~~~~~~
+
+*External types* classify imports and exports and their respective types.
+
+.. math::
+   \begin{array}{llll}
+   \production{external types} & \externtype &::=&
+     \FUNC~\functype ~|~ \\&&&
+     \TABLE~\tabletype ~|~ \\&&&
+     \MEM~\memtype ~|~ \\&&&
+     \GLOBAL~\globaltype \\
+   \end{array}
+
+
+Conventions
+...........
+
+The following auxiliary notation is defined for sequences of external types, filtering out entries of a specific kind in an order-preserving fashion:
+
+* :math:`\funcs(\externtype^\ast) = [\functype ~|~ \FUNC~\functype \in \externtype^\ast]`
+
+* :math:`\tables(\externtype^\ast) = [\tabletype ~|~ \TABLE~\tabletype \in \externtype^\ast]`
+
+* :math:`\mems(\externtype^\ast) = [\memtype ~|~ \MEM~\memtype \in \externtype^\ast]`
+
+* :math:`\globals(\externtype^\ast) = [\globaltype ~|~ \GLOBAL~\globaltype \in \externtype^\ast]`
+
+
 .. _store:
 .. _syntax-store:
 .. index:: ! store
@@ -147,7 +227,6 @@ Frame
    \production{(store)} & \frame &::=&
      \begin{array}[t]{l@{~}ll}
      \{ & \INST & \moduleinst, \\
-        & \STORE & \store, \\
         & \LOCALS & \val^\ast ~\} \\
      \end{array}
    \end{array}

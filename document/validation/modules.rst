@@ -526,7 +526,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \quad
      (C \vdash \mem : \X{mt})^\ast
      \quad
-     (C_i \vdash \global : \X{gt})_i^\ast
+     (C' \vdash \global : \X{gt})^\ast
      \\
      (C \vdash \elem ~\F{ok})^\ast
      \quad
@@ -548,13 +548,13 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      C = \{ \TYPES~\functype^\ast, \FUNCS~\X{ift}^\ast~\X{ft}^\ast, \TABLES~\X{itt}^\ast~\X{tt}^\ast, \MEMS~\X{imt}^\ast~\X{mt}^\ast, \GLOBALS~\X{igt}^\ast~\X{gt}^\ast \}
      \\
+     C' = \{ \GLOBALS~\X{igt}^\ast \}
+     \qquad
      |C.\TABLES| \leq 1
      \qquad
      |C.\MEMS| \leq 1
      \qquad
      \name^\ast ~\F{disjoint}
-     \qquad
-     (C_i = \{ \GLOBALS~[\X{igt}^\ast~\X{gt}^{i-1}] \})_i^\ast
      \end{array}
    }{
      \vdash \{
@@ -581,7 +581,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
    Globals, however, are not recursive.
-   The effect of defining the limited contexts :math:`C_i` for validating the module's globals is that their initialization expressions can only access imported and previously defined globals and nothing else.
+   The effect of defining the limited context :math:`C'` for validating the module's globals is that their initialization expressions can only access imported globals and nothing else.
 
 .. note::
    The restriction on the number of tables and memories may be lifted in future versions of WebAssembly.

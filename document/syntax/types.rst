@@ -175,37 +175,3 @@ Global Types
      \CONST ~|~
      \MUT \\
    \end{array}
-
-
-.. _syntax-externtype:
-.. index:: ! external type, function type, table type, memory type, global type
-   pair: abstract syntax; external type
-   pair: external; type
-
-External Types
-~~~~~~~~~~~~~~
-
-*External types* classify imports and exports and their respective types.
-
-.. math::
-   \begin{array}{llll}
-   \production{external types} & \externtype &::=&
-     \FUNC~\functype ~|~ \\&&&
-     \TABLE~\tabletype ~|~ \\&&&
-     \MEM~\memtype ~|~ \\&&&
-     \GLOBAL~\globaltype \\
-   \end{array}
-
-
-Conventions
-...........
-
-The following auxiliary notation is defined for sequences of external types, filtering out entries of a specific kind in an order-preserving fashion:
-
-* :math:`\funcs(\externtype^\ast) = [\functype ~|~ \FUNC~\functype \in \externtype^\ast]`
-
-* :math:`\tables(\externtype^\ast) = [\tabletype ~|~ \TABLE~\tabletype \in \externtype^\ast]`
-
-* :math:`\mems(\externtype^\ast) = [\memtype ~|~ \MEM~\memtype \in \externtype^\ast]`
-
-* :math:`\globals(\externtype^\ast) = [\globaltype ~|~ \GLOBAL~\globaltype \in \externtype^\ast]`
