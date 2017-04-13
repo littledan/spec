@@ -82,7 +82,7 @@ Table Instances
 .. math::
    \begin{array}{llll}
    \production{(table instance)} & \tableinst &::=&
-     \{ \ELEM~(\func^?)^\ast, \MAX~\u32 \} \\
+     \{ \ELEM~(\func^?)^\ast, \MAX~\u32^? \} \\
    \end{array}
 
 
@@ -95,7 +95,7 @@ Memory Instances
 .. math::
    \begin{array}{llll}
    \production{(memory instance)} & \meminst &::=&
-     \{ \DATA~\by^\ast, \MAX~\u32 \} \\
+     \{ \DATA~\by^\ast, \MAX~\u32^? \} \\
    \end{array}
 
 

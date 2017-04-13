@@ -79,6 +79,21 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
 
 .. math::
    \frac{
+     n_1 \geq n_2
+     \qquad
+     m_1 \leq m_2
+   }{
+     \vdash \{ \MIN~n_1, \MAX~m_1 \} \leq \{ \MIN~n_2, \MAX~m_2 \}
+   }
+   \quad
+   \frac{
+     n_1 \geq n_2
+   }{
+     \vdash \{ \MIN~n_1, \MAX~m_1^? \} \leq \{ \MIN~n_2, \MAX~\epsilon \}
+   }
+
+.. math::
+   \frac{
      \funcinst.\MODULE.\TYPES[\funcinst.\FUNC.\TYPE] = \functype
    }{
      S \vdash \FUNC~\funcinst : \FUNC~\functype
@@ -86,16 +101,20 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
 
 .. math::
    \frac{
-     S.\TABLES[\tableaddr] = \{ \ELEM~(a^?)^n, \MAX~m \}
+     S.\TABLES[\tableaddr] = \{ \ELEM~(a^?)^n, \MAX~m^? \}
+     \qquad
+     \vdash \{ \MIN~n, \MAX~m^? \} \leq \limits
    }{
-     S \vdash \TABLE~\tableaddr : \TABLE~(\{ \MIN~n, \MAX~m \}~\ANYFUNC)
+     S \vdash \TABLE~\tableaddr : \TABLE~(\limits~\ANYFUNC)
    }
 
 .. math::
    \frac{
-     S.\MEMS[\memaddr] = \{ \DATA~b^{n\cdot64\,\F{Ki}}, \MAX~m \}
+     S.\MEMS[\memaddr] = \{ \DATA~b^{n\cdot64\,\F{Ki}}, \MAX~m^? \}
+     \qquad
+     \vdash \{ \MIN~n, \MAX~m^? \} \leq \limits
    }{
-     S \vdash \MEM~\tableaddr : \MEM~\{ \MIN~n, \MAX~m \}
+     S \vdash \MEM~\tableaddr : \MEM~\limits
    }
 
 .. math::
