@@ -106,6 +106,7 @@
 .. |GLOBALS| mathdef:: \K{globals}
 .. |LOCALS| mathdef:: \K{locals}
 .. |LABELS| mathdef:: \K{labels}
+.. |LRETURN| mathdef:: \K{return}
 .. |IMPORTS| mathdef:: \K{imports}
 .. |EXPORTS| mathdef:: \K{exports}
 
@@ -256,7 +257,7 @@
 .. |expr| mathdef:: \xref{syntax/instructions}{syntax-expr}{\X{expr}}
 
 
-.. Store, terminals
+.. Configurations, terminals
 
 .. |INST| mathdef:: \K{inst}
 
@@ -264,7 +265,7 @@
 .. |ELEMS| mathdef:: \K{elems}
 
 
-.. Store, non-terminals
+.. Configurations, non-terminals
 
 .. |val| mathdef:: \xref{execution/conventions}{syntax-val}{\X{val}}
 
@@ -286,6 +287,7 @@
 
 .. |store| mathdef:: \xref{execution/conventions}{syntax-store}{\X{store}}
 .. |frame| mathdef:: \xref{execution/conventions}{syntax-frame}{\X{frame}}
+.. |label| mathdef:: \xref{execution/conventions}{syntax-label}{\X{label}}
 
 
 .. Execution, notation

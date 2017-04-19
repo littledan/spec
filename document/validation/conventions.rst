@@ -39,10 +39,11 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Globals*: the list of globals declared in the current module, represented by their global type.
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
 * *Labels*: the stack of labels accessible from the current position, represented by their result type.
+* *Return*: the return type of the current function, represented as a result type.
 
 In other words, a context contains a sequence of suitable :ref:`types <syntax-types>` for each :ref:`index space <syntax-index>`,
 describing each defined entry in that space.
-Locals and labels are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
+Locals, labels and return type are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.
 
 It is convenient to define contexts as :ref:`records <syntax-record>` :math:`C` with abstract syntax:
@@ -57,7 +58,8 @@ It is convenient to define contexts as :ref:`records <syntax-record>` :math:`C` 
         & \MEMS & \memtype^\ast, \\
         & \GLOBALS & \globaltype^\ast, \\
         & \LOCALS & \valtype^\ast, \\
-        & \LABELS & \resulttype^\ast ~\} \\
+        & \LABELS & \resulttype^\ast, \\
+        & \LRETURN & \resulttype^? ~\} \\
      \end{array}
    \end{array}
 

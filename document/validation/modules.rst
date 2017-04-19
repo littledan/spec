@@ -47,9 +47,11 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
-  * the |LOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
+  * |LOCALS| set to the sequence of :ref:`value types <syntax-valtype>` :math:`t_1^\ast~t^\ast`, concatenating parameters and locals,
 
-  * the |LABELS| set to the singular sequence with :ref:`result type <syntax-valtype>` :math:`[t_2^\ast][t_1^\ast] \to [t_2^?]`.
+  * |LABELS| set to the singular sequence with :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
+
+  * |LRETURN| set to the :ref:`result type <syntax-valtype>` :math:`[t_2^\ast]`.
 
 * Under the context :math:`C'`,
   the expression :math:`\expr` must be valid with type :math:`t_2^\ast`.
@@ -60,7 +62,7 @@ Functions :math:`\func` are classified by :ref:`function types <syntax-functype>
    \frac{
      C.\TYPES[x] = [t_1^\ast] \to [t_2^?]
      \qquad
-     C,\LOCALS\,t_1^\ast~t^\ast,\LABELS~[t_2^?] \vdash \expr : [t_2^?]
+     C,\LOCALS\,t_1^\ast~t^\ast,\LRETURN~[t_2^?] \vdash \expr : [t_2^?]
    }{
      C \vdash \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\expr \} : [t_1^\ast] \to [t_2^?]
    }
@@ -477,6 +479,8 @@ Instead, the context :math:`C` for validation of the module's content is constru
   * :math:`C.\LOCALS` is empty,
 
   * :math:`C.\LABELS` is empty.
+
+  * :math:`C.\LRETURN` is empty.
 
 * Under the context :math:`C`:
 

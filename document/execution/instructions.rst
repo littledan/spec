@@ -793,14 +793,18 @@ Control Instructions
 :math:`\BLOCK~[t^?]~\instr^\ast~\END`
 .....................................
 
-1. Push a label to the label stack whose type is :math:`[t^?]` and whose target is the end of the block.
+1. Let :math:`n` be the arity of the :ref:`result type <syntax-resulttype>` :math:`t^?`.
 
-2. Execute the instruction sequence :math:`\instr^\ast`.
+2. Let :math:`L` be a label whose arity is :math:`n` and whose target is the end of the block.
+
+3. With an empty operand stack and :math:`L` pushed on the label stack do:
+
+   a. Execute the instruction sequence :math:`\instr^\ast`.
 
 .. math::
    \frac{
    }{
-     \BLOCK~[t^?]~\instr^\ast~\END \stepto \LABEL_\epsilon~[t^?]~\instr^\ast~\END
+     \BLOCK~[t^n]~\instr^\ast~\END \stepto \LABEL_n\{\epsilon\}~\instr^\ast~\END
    }
 
 
@@ -809,14 +813,18 @@ Control Instructions
 :math:`\LOOP~[t^?]~\instr^\ast~\END`
 ....................................
 
-1. Push a label to the label stack whose type is :math:`[]` and whose target is the start of the loop.
+1. Let :math:`n` be the arity of the :ref:`result type <syntax-resulttype>` :math:`t^?`.
 
-2. Execute the instruction sequence :math:`\instr^\ast`.
+2. Let :math:`L` be the label whose arity is :math:`0` and whose target is the start of the loop.
+
+3. With an empty operand stack and :math:`L` pushed on the label stack do:
+
+   a. Execute the instruction sequence :math:`\instr^\ast`.
 
 .. math::
    \frac{
    }{
-     \LOOP~[t^?]~\instr^\ast~\END \stepto \LABEL_{\LOOP~[t^?]~\instr^\ast~\END}~[t^?]~\instr^\ast~\END
+     \LOOP~[t^?]~\instr^\ast~\END \stepto \LABEL_0\{\LOOP~[t^?]~\instr^\ast~\END\}~\instr^\ast~\END
    }
 
 
@@ -860,6 +868,13 @@ Control Instructions
 .. todo::
 
 1. Assert: due to :ref:`validation <valid-br>`, :math:`l` is defined in the label stack.
+
+.. math::
+   \frac{
+     n \neq 0
+   }{
+     \LABEL_n\{e^\ast\}~L^j[v^n~(\BR~l)]~\END \stepto v^n~e^\ast
+   }
 
 
 .. _exec-br_if:
@@ -1051,24 +1066,88 @@ Invocation
 
 
 .. _exec-instr-seq:
-.. index:: instruction
+.. index:: instruction, instruction sequence
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
 
-Typing of instruction sequences is defined recursively.
+1. If a label is provided, then:
 
+   a. Push the label to the label stack.
 
-Empty Instruction Sequence: :math:`\epsilon`
-............................................
+2. With a new, empty operand stack, do:
 
-* The empty instruction sequence is valid with type :math:`[t^\ast] \to [t^\ast]`,
-  for any sequence of :ref:`value types <syntax-valtype>` :math:`t^\ast`.
+   a. While no trap occurred and there are more instructions in the sequence, do:
+
+      i. Let :math:`\instr` be the next instruction.
+
+      ii. Execute :math:`\instr`.
+
+      iii. Remove :math:`\instr` from the sequence.
+
+   b. Pop the results :math:`v^n` from the operand stack.
+
+3. If there is a label on the label stack, then:
+
+   a. Assert: due to :ref:`validation <valid-instr-seq>`, the arity of the label is :math:`n`.
+
+   b. Pop the label from the label stack.
+
+4. If no trap occurred, then:
+
+   a. Return :math:`v^n`.
+      
+      
+
+1. If no instructions are left in the instruction sequence, then:
+
+   a. If there is a label on the label stack:
+
+      i. Pop all results :math:`v^n` from the operand stack.
+
+      ii. Assert: due to :ref:`validation <valid-instr-seq>`, the arity of the label is :math:`n`.
+
+      iii. Pop the label from the label stack.
+
+      iv. Restore the previous operand stack.
+
+      v. Push the results :math:`v^n` back to the operand stack.
+
+2. Else, if a |TRAP| occurs in an instruction sequence, then:
+
+   a. Pop all results :math:`v^n` from the operand stack.
+
+   b. If there is a label on the label stack:
+
+      i. Pop the label from the label stack.
+
+   c. Trap.
+
+3. Else:
+
+   a. Let :math:`\instr` be the next instruction.
+
+   b. Execute :math:`\instr`.
+
+   c. Execute the remainder of the instruction sequence.
 
 .. math::
    \frac{
    }{
-     C \vdash \epsilon : [t^\ast] \to [t^\ast]
+     \LABEL_n\{e^\ast\}~v^n~\END \stepto v^n
+   }
+
+.. math::
+   \frac{
+   }{
+     \LABEL_n\{e^\ast\}~\TRAP~\END \stepto \TRAP
+   }
+
+.. math::
+   \frac{
+     L^0 \neq [\_]
+   }{
+     L^0[\TRAP] \stepto \TRAP
    }
 
 

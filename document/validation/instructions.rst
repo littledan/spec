@@ -674,21 +674,25 @@ Control Instructions
 :math:`\RETURN`
 ...............
 
-* The label vector :math:`C.\LABELS` must not be empty in the context.
+* The return type :math:`C.\LRETURN` must not be empty in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` that is the last element of :math:`C.\LABELS`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\LRETURN`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\LABELS[|C.\LABELS|-1] = [t^?]
+     C.\LRETURN = [t^?]
    }{
      C \vdash \RETURN : [t_1^\ast~t^?] \to [t_2^\ast]
    }
 
 .. note::
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+   :math:`C.\LRETURN` is empty (:math:`\epsilon`) when validating an expression that is not a function body.
+   This differs from it being set to the empty result type (:math:`[]`),
+   which is the case for functions not returning anything.
 
 
 .. _valid-call:
@@ -734,7 +738,7 @@ Control Instructions
 
 
 .. _valid-instr-seq:
-.. index:: instruction
+.. index:: instruction, instruction sequence
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
