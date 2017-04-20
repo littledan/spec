@@ -70,62 +70,6 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-In this section, the following grammar shorthands are adopted:
-
-.. math::
-   \begin{array}{llll}
-   \production{unary operators} & \unop &::=&
-     \CLZ ~|~
-     \CTZ ~|~
-     \POPCNT ~|~
-     \ABS ~|~
-     \NEG ~|~
-     \SQRT ~|~
-     \CEIL ~|~
-     \FLOOR ~|~
-     \TRUNC ~|~
-     \NEAREST \\
-   \production{binary operators} & \binop &::=&
-     \ADD ~|~
-     \SUB ~|~
-     \MUL ~|~
-     \DIV ~|~
-     \DIV\K{\_}\sx ~|~
-     \REM\K{\_}\sx ~|~
-     \FMIN ~|~
-     \FMAX ~|~
-     \COPYSIGN ~|~ \\&&&
-     \AND ~|~
-     \OR ~|~
-     \XOR ~|~
-     \SHL ~|~
-     \SHR\K{\_}\sx ~|~
-     \ROTL ~|~
-     \ROTR \\
-   \production{test operators} & \testop &::=&
-     \EQZ \\
-   \production{relational operators} & \relop &::=&
-     \EQ ~|~
-     \NE ~|~
-     \LT ~|~
-     \GT ~|~
-     \LE ~|~
-     \GE ~|~
-     \LT\K{\_}\sx ~|~
-     \GT\K{\_}\sx ~|~
-     \LE\K{\_}\sx ~|~
-     \GE\K{\_}\sx \\
-   \production{conversion operators} & \cvtop &::=&
-     \WRAP ~|~
-     \EXTEND\K{\_}\sx ~|~
-     \TRUNC\K{\_}\sx ~|~
-     \CONVERT\K{\_}\sx ~|~
-     \DEMOTE ~|~
-     \PROMOTE ~|~
-     \REINTERPRET \\
-   \end{array}
-
-
 .. _valid-const:
 
 :math:`t\K{.}\CONST~c`
@@ -136,7 +80,7 @@ In this section, the following grammar shorthands are adopted:
 .. math::
    \frac{
    }{
-     C \vdash t\K{.const}~c : [] \to [t]
+     C \vdash t\K{.}\CONST~c : [] \to [t]
    }
 
 

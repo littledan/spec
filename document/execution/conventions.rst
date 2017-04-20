@@ -225,9 +225,7 @@ Frame
 .. math::
    \begin{array}{llll}
    \production{(store)} & \frame &::=&
-     \LOCAL_n\{
-     \moduleinst; \\
-     \val^\ast\} \\
+     \{\MODULE~\moduleinst; \LOCALS~\val^\ast\} \\
    \end{array}
 
 

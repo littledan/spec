@@ -116,8 +116,6 @@
 .. |TABLE| mathdef:: \K{table}
 .. |MEM| mathdef:: \K{mem}
 .. |GLOBAL| mathdef:: \K{global}
-.. |LOCAL| mathdef:: \K{local}
-.. |LABEL| mathdef:: \K{label}
 .. |IMPORT| mathdef:: \K{import}
 .. |EXPORT| mathdef:: \K{export}
 .. |CODE| mathdef:: \K{code}
@@ -234,6 +232,8 @@
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
 .. |TRAP| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{trap}}
+.. |LABEL| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{label}}
+.. |LOCAL| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{local}}
 .. |INVOKE| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{invoke}}
 .. |INSTANTIATE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{instantiate}}
 .. |INITIALIZE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{initialize}}
@@ -244,11 +244,21 @@
 
 .. Instructions, non-terminals
 
-.. |unop| mathdef:: \X{unop}
-.. |binop| mathdef:: \X{binop}
-.. |testop| mathdef:: \X{testop}
-.. |relop| mathdef:: \X{relop}
-.. |cvtop| mathdef:: \X{cvtop}
+.. |unop| mathdef:: \xref{syntax/instructions}{syntax-unop}{\X{unop}}
+.. |binop| mathdef:: \xref{syntax/instructions}{syntax-binop}{\X{binop}}
+.. |testop| mathdef:: \xref{syntax/instructions}{syntax-testop}{\X{testop}}
+.. |relop| mathdef:: \xref{syntax/instructions}{syntax-relop}{\X{relop}}
+.. |cvtop| mathdef:: \xref{syntax/instructions}{syntax-cvtop}{\X{cvtop}}
+
+.. |iunop| mathdef:: \xref{syntax/instructions}{syntax-iunop}{\X{iunop}}
+.. |ibinop| mathdef:: \xref{syntax/instructions}{syntax-ibinop}{\X{ibinop}}
+.. |itestop| mathdef:: \xref{syntax/instructions}{syntax-itestop}{\X{itestop}}
+.. |irelop| mathdef:: \xref{syntax/instructions}{syntax-irelop}{\X{irelop}}
+
+.. |funop| mathdef:: \xref{syntax/instructions}{syntax-funop}{\X{funop}}
+.. |fbinop| mathdef:: \xref{syntax/instructions}{syntax-fbinop}{\X{fbinop}}
+.. |ftestop| mathdef:: \xref{syntax/instructions}{syntax-ftestop}{\X{ftestop}}
+.. |frelop| mathdef:: \xref{syntax/instructions}{syntax-frelop}{\X{frelop}}
 
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
