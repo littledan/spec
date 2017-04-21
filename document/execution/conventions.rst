@@ -35,8 +35,8 @@ Addresses
    \end{array}
 
 .. note::
-   A *memory address* denotes the abstract address *of* a memory instance in the store,
-   *not* an offset *in* a memory instance.
+   A *memory address* denotes the abstract address of a memory *instance* in the store,
+   not an offset *in* a linear memory instance.
 
 
 .. _syntax-moduleinst:
@@ -149,13 +149,13 @@ Conventions
 
 The following auxiliary notation is defined for sequences of external values, filtering out entries of a specific kind in an order-preserving fashion:
 
-* :math:`\funcs(\externval^\ast) = [\funcinst ~|~ \FUNC~\funcinst \in \externval^\ast]`
-
-* :math:`\tables(\externval^\ast) = [\tableaddr ~|~ \TABLE~\tableaddr \in \externval^\ast]`
-
-* :math:`\mems(\externval^\ast) = [\memaddr ~|~ \MEM~\memaddr \in \externval^\ast]`
-
-* :math:`\globals(\externval^\ast) = [\globaladdr ~|~ \GLOBAL~\globaladdr \in \externval^\ast]`
+.. math::
+   \begin{array}{lcl}
+   \funcs(\externval^\ast) &=& [\funcinst ~|~ \FUNC~\funcinst \in \externval^\ast] \\
+   \tables(\externval^\ast) &=& [\tableaddr ~|~ \TABLE~\tableaddr \in \externval^\ast] \\
+   \mems(\externval^\ast) &=& [\memaddr ~|~ \MEM~\memaddr \in \externval^\ast] \\
+   \globals(\externval^\ast) &=& [\globaladdr ~|~ \GLOBAL~\globaladdr \in \externval^\ast] \\
+   \end{array}
 
 
 .. _syntax-externtype:
@@ -183,13 +183,13 @@ Conventions
 
 The following auxiliary notation is defined for sequences of external types, filtering out entries of a specific kind in an order-preserving fashion:
 
-* :math:`\funcs(\externtype^\ast) = [\functype ~|~ \FUNC~\functype \in \externtype^\ast]`
-
-* :math:`\tables(\externtype^\ast) = [\tabletype ~|~ \TABLE~\tabletype \in \externtype^\ast]`
-
-* :math:`\mems(\externtype^\ast) = [\memtype ~|~ \MEM~\memtype \in \externtype^\ast]`
-
-* :math:`\globals(\externtype^\ast) = [\globaltype ~|~ \GLOBAL~\globaltype \in \externtype^\ast]`
+.. math::
+   \begin{array}{lcl}
+   \funcs(\externtype^\ast) &=& [\functype ~|~ \FUNC~\functype \in \externtype^\ast] \\
+   \tables(\externtype^\ast) &=& [\tabletype ~|~ \TABLE~\tabletype \in \externtype^\ast] \\
+   \mems(\externtype^\ast) &=& [\memtype ~|~ \MEM~\memtype \in \externtype^\ast] \\
+   \globals(\externtype^\ast) &=& [\globaltype ~|~ \GLOBAL~\globaltype \in \externtype^\ast] \\
+   \end{array}
 
 
 .. _store:
@@ -201,11 +201,11 @@ Store
 
 .. math::
    \begin{array}{llll}
-   \production{(store)} & \store &::=&
+   \production{(store)} & \store &::=& \{~
      \begin{array}[t]{l@{~}ll}
-     \{ & \TABLES & \tableinst^\ast, \\
-        & \MEMS & \meminst^\ast, \\
-        & \GLOBALS & \globalinst^\ast ~\} \\
+     \TABLES & \tableinst^\ast, \\
+     \MEMS & \meminst^\ast, \\
+     \GLOBALS & \globalinst^\ast ~\} \\
      \end{array}
    \end{array}
 
@@ -225,16 +225,22 @@ Frame
 .. math::
    \begin{array}{llll}
    \production{(store)} & \frame &::=&
-     \begin{array}[t]{l@{~}ll}
-     \{ & \INST & \moduleinst, \\
-        & \LOCALS & \val^\ast ~\} \\
-     \end{array}
+     \{\MODULE~\moduleinst; \LOCALS~\val^\ast\} \\
    \end{array}
 
-Convention
-..........
 
-* The meta variable :math:`F` ranges over frames where clear from context.
+.. _label:
+.. _syntax-label:
+.. index:: ! label
+
+Label
+~~~~~
+
+.. math::
+   \begin{array}{llll}
+   \production{(store)} & \label &::=& \{~
+     \LABEL_n\{\instr^\ast\} \\
+   \end{array}
 
 
 Textual Notation

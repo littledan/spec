@@ -70,62 +70,6 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-In this section, the following grammar shorthands are adopted:
-
-.. math::
-   \begin{array}{llll}
-   \production{unary operators} & \unop &::=&
-     \CLZ ~|~
-     \CTZ ~|~
-     \POPCNT ~|~
-     \ABS ~|~
-     \NEG ~|~
-     \SQRT ~|~
-     \CEIL ~|~
-     \FLOOR ~|~
-     \TRUNC ~|~
-     \NEAREST \\
-   \production{binary operators} & \binop &::=&
-     \ADD ~|~
-     \SUB ~|~
-     \MUL ~|~
-     \DIV ~|~
-     \DIV\K{\_}\sx ~|~
-     \REM\K{\_}\sx ~|~
-     \FMIN ~|~
-     \FMAX ~|~
-     \COPYSIGN ~|~ \\&&&
-     \AND ~|~
-     \OR ~|~
-     \XOR ~|~
-     \SHL ~|~
-     \SHR\K{\_}\sx ~|~
-     \ROTL ~|~
-     \ROTR \\
-   \production{test operators} & \testop &::=&
-     \EQZ \\
-   \production{relational operators} & \relop &::=&
-     \EQ ~|~
-     \NE ~|~
-     \LT ~|~
-     \GT ~|~
-     \LE ~|~
-     \GE ~|~
-     \LT\K{\_}\sx ~|~
-     \GT\K{\_}\sx ~|~
-     \LE\K{\_}\sx ~|~
-     \GE\K{\_}\sx \\
-   \production{conversion operators} & \cvtop &::=&
-     \WRAP ~|~
-     \EXTEND\K{\_}\sx ~|~
-     \TRUNC\K{\_}\sx ~|~
-     \CONVERT\K{\_}\sx ~|~
-     \DEMOTE ~|~
-     \PROMOTE ~|~
-     \REINTERPRET \\
-   \end{array}
-
-
 .. _valid-const:
 
 :math:`t\K{.}\CONST~c`
@@ -136,7 +80,7 @@ In this section, the following grammar shorthands are adopted:
 .. math::
    \frac{
    }{
-     C \vdash t\K{.const}~c : [] \to [t]
+     C \vdash t\K{.}\CONST~c : [] \to [t]
    }
 
 
@@ -674,21 +618,25 @@ Control Instructions
 :math:`\RETURN`
 ...............
 
-* The label vector :math:`C.\LABELS` must not be empty in the context.
+* The return type :math:`C.\LRETURN` must not be empty in the context.
 
-* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` that is the last element of :math:`C.\LABELS`.
+* Let :math:`[t^?]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\LRETURN`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^?] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\LABELS[|C.\LABELS|-1] = [t^?]
+     C.\LRETURN = [t^?]
    }{
      C \vdash \RETURN : [t_1^\ast~t^?] \to [t_2^\ast]
    }
 
 .. note::
    The |RETURN| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+   :math:`C.\LRETURN` is empty (:math:`\epsilon`) when validating an expression that is not a function body.
+   This differs from it being set to the empty result type (:math:`[]`),
+   which is the case for functions not returning anything.
 
 
 .. _valid-call:
@@ -734,7 +682,7 @@ Control Instructions
 
 
 .. _valid-instr-seq:
-.. index:: instruction
+.. index:: instruction, instruction sequence
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
