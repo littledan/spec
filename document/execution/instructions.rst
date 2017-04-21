@@ -300,7 +300,7 @@ Variable Instructions
 
 4. Push the value :math:`v` to the stack.
 
-5. Execute the instruction :math:`(\SETLOCAL~x)`.
+5. :ref:`Execute <exec-set_local>` the instruction :math:`(\SETLOCAL~x)`.
 
 .. math::
    \frac{
@@ -776,7 +776,7 @@ Control Instructions
 
 2. Let :math:`L` be a label whose arity is :math:`n` and whose target is the end of the block.
 
-3. Execute the :ref:`labelled instruction sequence <exec-instr-seq-labelled>`  :math:`\instr^\ast` with label :math:`L`.
+3. :ref:`Execute <exec-instr-seq-labelled>` the labelled instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
    \frac{
@@ -794,7 +794,7 @@ Control Instructions
 
 2. Let :math:`L` be the label whose arity is :math:`0` and whose target is the start of the loop.
 
-3. Execute the :ref:`labelled instruction sequence <exec-instr-seq-labelled>`  :math:`\instr^\ast` with label :math:`L`.
+3. :ref:`Execute <exec-instr-seq-labelled>` the labelled instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
    \frac{
@@ -814,11 +814,11 @@ Control Instructions
 
 3. If :math:`n` is not :math:`0`, then:
 
-   a. Execute the instruction :math:`\BLOCK~[t^?]~\instr_1^\ast~\END`.
+   a. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t^?]~\instr_1^\ast~\END`.
 
 4. Else:
 
-   a. Execute the instruction :math:`\BLOCK~[t^?]~\instr_2^\ast~\END`.
+   a. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t^?]~\instr_2^\ast~\END`.
 
 .. math::
    \frac{
@@ -881,7 +881,7 @@ Control Instructions
 
 3. If :math:`n` is not :math:`0`, then:
 
-   a. Execute the instruction :math:`(\BR~l)`.
+   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
 4. Else:
 
@@ -917,11 +917,11 @@ Control Instructions
 
    a. Let :math:`l_i` be the label :math:`l^\ast[i]`.
 
-   b. Execute the instruction :math:`(\BR~l_i)`.
+   b. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l_i)`.
 
 5. Else:
 
-   a. Execute the instruction :math:`(\BR~l_N)`.
+   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l_N)`.
 
 .. math::
    \frac{
@@ -1091,7 +1091,7 @@ Invocation of :ref:`Function Instance <syntax-funcinst>` :math:`f`
 
 9. Push :math:`F` to the stack.
 
-10. Execute the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
+10. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
 
 .. todo::
    terminate
@@ -1121,13 +1121,13 @@ Plain Sequences :math:`\instr^\ast`
 
    a. Let :math:`\instr` be the first instruction of the sequence.
 
-   b. Execute :math:`\instr`.
+   b. :ref:`Execute <exec-instr>` the instruction :math:`\instr`.
 
    c. If no trap occurred, then:
 
       i. Let :math:`{\instr'}^\ast` the remainder of the sequence.
 
-      ii. Execute the instruction sequence :math:`{\instr'}^\ast`.
+      ii. :ref:`Execute <exec-instr-seq>` the instruction sequence :math:`{\instr'}^\ast`.
 
    d. Else:
 
@@ -1171,7 +1171,7 @@ Labelled Sequences :math:`\instr^\ast` with label :math:`L`
 
 1. Push :math:`L` to the stack.
 
-2. Execute the :ref:`instruction sequence <exec-instr-seq>` :math:`\instr^\ast`.
+2. :ref:`Execute <exec-instr-seq>` the instruction sequence :math:`\instr^\ast`.
 
 3. If no trap occurred, then:
 
@@ -1221,7 +1221,7 @@ Expressions
 :math:`\instr^\ast~\END`
 ........................
 
-1. Execute the instruction sequence :math:`\instr^\ast`.
+1. :ref:`Execute <exec-instr-seq>` the instruction sequence :math:`\instr^\ast`.
 
 2. If no trap occurred, then:
 
