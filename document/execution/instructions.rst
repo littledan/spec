@@ -45,18 +45,12 @@ Numeric Instructions
    a. Trap.
 
 .. math::
-   \frac{
-     \unop_t(c_1) = c
-   }{
-     (t\K{.}\CONST~c_1)~t\K{.}\unop \stepto (t\K{.}\CONST~c)
-   }
-
-.. math::
-   \frac{
-     \unop_t(c_1) = \bot
-   }{
-     (t\K{.}\CONST~c_1)~t\K{.}\unop \stepto \TRAP
-   }
+   \begin{array}{lcl@{\qquad}l}
+   (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& (t\K{.}\CONST~c)
+     & (\mbox{if}~\unop_t(c_1) = c) \\
+   (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& \TRAP
+     & (\mbox{otherwise})
+   \end{array}
 
 
 .. _exec-binop:
@@ -81,18 +75,12 @@ Numeric Instructions
    a. Trap.
 
 .. math::
-   \frac{
-     \binop_t(c_1, c_2) = c
-   }{
-     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop \stepto (t\K{.}\CONST~c)
-   }
-
-.. math::
-   \frac{
-     \binop_t(c_1, c_2) = \bot
-   }{
-     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop \stepto \TRAP
-   }
+   \begin{array}{lcl@{\qquad}l}
+   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
+     & (\mbox{if}~\binop_t(c_1,c_2) = c) \\
+   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
+     & (\mbox{otherwise})
+   \end{array}
 
 
 .. _exec-testop:
@@ -109,11 +97,10 @@ Numeric Instructions
 4. Push the value :math:`\I32.\CONST~c` to the stack.
 
 .. math::
-   \frac{
-     \testop_t(c_1) = c
-   }{
-     (t\K{.}\CONST~c_1)~t\K{.}\testop \stepto (\I32\K{.}\CONST~c)
-   }
+   \begin{array}{lcl@{\qquad}l}
+   (t\K{.}\CONST~c_1)~t\K{.}\testop &\stepto& (t\K{.}\CONST~c)
+     & (\mbox{where}~\testop_t(c_1) = c) \\
+   \end{array}
 
 
 .. _exec-relop:
@@ -132,11 +119,10 @@ Numeric Instructions
 5. Push the value :math:`\I32.\CONST~c` to the stack.
 
 .. math::
-   \frac{
-     \relop_t(c_1, c_2) = c
-   }{
-     (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop \stepto (\I32\K{.}\CONST~c)
-   }
+   \begin{array}{lcl@{\qquad}l}
+   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop &\stepto& (t\K{.}\CONST~c)
+     & (\mbox{where}~\relop_t(c_1,c_2) = c) \\
+   \end{array}
 
 
 .. _exec-cvtop:
@@ -159,18 +145,12 @@ Numeric Instructions
    a. Trap.
 
 .. math::
-   \frac{
-     \cvtop_{t_1,t_2}(c_1) = c_2
-   }{
-     (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop/t_1 \stepto (t_2\K{.}\CONST~c_2)
-   }
-
-.. math::
-   \frac{
-     \cvtop_{t_1,t_2}(c_1) = \bot
-   }{
-     (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop/t_1 \stepto \TRAP
-   }
+   \begin{array}{lcl@{\qquad}l}
+   (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& (t_2\K{.}\CONST~c_2)
+     & (\mbox{if}~\cvtop_{t_1,t_2}(c_1) = c_2) \\
+   (t\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{/}t_1 &\stepto& \TRAP
+     & (\mbox{otherwise})
+   \end{array}
 
 
 .. _exec-instr-parametric:
@@ -191,10 +171,9 @@ Parametric Instructions
 2. Pop the value :math:`v` from the stack.
 
 .. math::
-   \frac{
-   }{
-     v~\DROP \stepto \epsilon
-   }
+   \begin{array}{lcl@{\qquad}l}
+   v~\DROP &\stepto& \epsilon
+   \end{array}
 
 
 .. _exec-select:
@@ -221,18 +200,12 @@ Parametric Instructions
    a. Push the value :math:`v_2` back to the stack.
 
 .. math::
-   \frac{
-     n \neq 0
-   }{
-     v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT \stepto v_1
-   }
-
-.. math::
-   \frac{
-     n = 0
-   }{
-     v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT \stepto v_2
-   }
+   \begin{array}{lcl@{\qquad}l}
+   v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT &\stepto& v_1
+     & (\mbox{if}~n \neq 0) \\
+   v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT &\stepto& v_2
+     & (\mbox{if}~n = 0) \\
+   \end{array}
 
 
 .. _exec-instr-variable:
@@ -257,11 +230,10 @@ Variable Instructions
 4. Push the value :math:`v` to the stack.
 
 .. math::
-   \frac{
-     F.\LOCALS[x] = v
-   }{
-     F; (\GETLOCAL~x) \stepto F; v
-   }
+   \begin{array}{lcl@{\qquad}l}
+   F; (\GETLOCAL~x) &\stepto& F; v
+     & (\mbox{if}~F.\LOCALS[x] = v) \\
+   \end{array}
 
 
 .. _exec-set_local:
@@ -280,11 +252,10 @@ Variable Instructions
 5. Replace :math:`F.\LOCALS[x]` with the value :math:`v`.
 
 .. math::
-   \frac{
-     F' = F~\mbox{with}~\LOCALS[x] = v
-   }{
-     F; v~(\SETLOCAL~x) \stepto F'; \epsilon
-   }
+   \begin{array}{lcl@{\qquad}l}
+   F; v~(\SETLOCAL~x) &\stepto& F'; \epsilon
+     & (\mbox{where}~F' = F~\mbox{with}~\LOCALS[x] = v) \\
+   \end{array}
 
 
 .. _exec-tee_local:
@@ -303,10 +274,9 @@ Variable Instructions
 5. :ref:`Execute <exec-set_local>` the instruction :math:`(\SETLOCAL~x)`.
 
 .. math::
-   \frac{
-   }{
-     F; v~(\TEELOCAL~x) \stepto F'; v~v~(\SETLOCAL~x)
-   }
+   \begin{array}{lcl@{\qquad}l}
+   F; v~(\TEELOCAL~x) &\stepto& F'; v~v~(\SETLOCAL~x)
+   \end{array}
 
 
 .. _exec-get_global:
@@ -329,11 +299,10 @@ Variable Instructions
 7. Push the value :math:`v` to the stack.
 
 .. math::
-   \frac{
-     S.\GLOBALS[F.\MODULE.\GLOBALS[x]].\VALUE = v
-   }{
-     S; F; (\GETGLOBAL~x) \stepto S; F; v
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\GETGLOBAL~x) &\stepto& S; F; v
+     & (\mbox{if}~S.\GLOBALS[F.\MODULE.\GLOBALS[x]].\VALUE = v) \\
+   \end{array}
 
 
 .. _exec-set_global:
@@ -358,11 +327,10 @@ Variable Instructions
 8. Replace :math:`S.\GLOBALS[a]` with the value :math:`v`.
 
 .. math::
-   \frac{
-     S' = S~\mbox{with}~\GLOBALS[F.\MODULE.\GLOBALS[x]].\VALUE = v
-   }{
-     S; F; v~(\GETGLOBAL~x) \stepto S'; F; \epsilon
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; v~(\GETGLOBAL~x) &\stepto& S'; F; \epsilon
+     & (\mbox{where}~S' = S~\mbox{with}~\GLOBALS[F.\MODULE.\GLOBALS[x]].\VALUE = v) \\
+   \end{array}
 
 
 .. _exec-instr-memory:
@@ -639,11 +607,10 @@ Memory Instructions
 7. Push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
 .. math::
-   \frac{
-     |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| = \X{sz}\cdot64\,\F{Ki}
-   }{
-     S; F; \CURRENTMEMORY \stepto S; F; (\I32.\CONST~\X{sz})
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; \CURRENTMEMORY &\stepto& S; F; (\I32.\CONST~\X{sz})
+     & (\mbox{where}~|S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| = \X{sz}\cdot64\,\F{Ki} \\
+   \end{array}
 
 
 .. _exec-grow_memory:
@@ -671,7 +638,7 @@ Memory Instructions
 
 10. If :math:`X{mem}.\MAX` is not empty and :math:`\X{sz} + n` is larger than :math:`\X{mem}.\MAX`, then:
 
-  a. Push the value :math:`\I32.\CONST~{-1}` to the stack.
+  a. Push the value :math:`\I32.\CONST~(-1)` to the stack.
 
 11. Either:
 
@@ -683,43 +650,19 @@ Memory Instructions
 
 12. Or:
 
-  a. Push the value :math:`\I32.\CONST~{-1}` to the stack.
+  a. Push the value :math:`\I32.\CONST~(-1)` to the stack.
 
 .. math::
-   \frac{
-   }{
-     S; F; (\I32.\CONST~n)~\GROWMEMORY \stepto S'; F; (\I32.\CONST~{-1})
-   } \\
-   ~ \\
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     F.\MODULE.\MEMS[0] = a
-     \qquad
-     |S.\MEMS[a].\DATA| = \X{sz}\cdot64\,\F{Ki}
-     \\
-     \X{sz} + \uint(n) > S.\MEMS[a].\MAX
-     \end{array}
-   }{
-     S; F; (\I32.\CONST~n)~\GROWMEMORY \stepto S'; F; (\I32.\CONST~{-1})
-   } \\
-   ~ \\
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     F.\MODULE.\MEMS[0] = a
-     \qquad
-     |S.\MEMS[a].\DATA| = \X{sz}\cdot64\,\F{Ki}
-     \\
-     \X{sz} + \uint(n) \leq S.\MEMS[a].\MAX \vee S.\MEMS[a].\MAX = \epsilon
-     \\
-     S' = S~\mbox{with}~\MEMS[a].\DATA = S.\MEMS[a].\DATA~(\hex{00})^{\uint(n)\cdot64\,\F{Ki}}
-     \end{array}
-   }{
-     S; F; (\I32.\CONST~n)~\GROWMEMORY \stepto S'; F; (\I32.\CONST~\X{sz})
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~n)~\GROWMEMORY &\stepto& S'; F; (\I32.\CONST~\X{sz})
+     & \begin{array}[t]{@{}r@{~}l@{}}
+       (\mbox{if} & F.\MODULE.\MEMS[0] = a \\
+       \wedge & |S.\MEMS[a].\DATA| = \X{sz}\cdot64\,\F{Ki} \\
+       \wedge & (\X{sz} + \uint(n) \leq S.\MEMS[a].\MAX \vee S.\MEMS[a].\MAX = \epsilon) \\
+       \wedge & S' = S~\mbox{with}~\MEMS[a].\DATA = S.\MEMS[a].\DATA~(\hex{00})^{\uint(n)\cdot64\,\F{Ki}}) \\
+       \end{array} \\
+   S; F; (\I32.\CONST~n)~\GROWMEMORY &\stepto& S; F; (\I32.\CONST~{-1})
+   \end{array}
 
 .. note::
    The |GROWMEMORY| instruction is non-deterministic.
@@ -747,10 +690,9 @@ Control Instructions
 1. Do nothing.
 
 .. math::
-   \frac{
-   }{
-     \NOP \stepto \epsilon
-   }
+   \begin{array}{lcl@{\qquad}l}
+   \NOP &\stepto& \epsilon
+   \end{array}
 
 
 .. _exec-unreachable:
@@ -761,10 +703,9 @@ Control Instructions
 1. Trap.
 
 .. math::
-   \frac{
-   }{
-     \UNREACHABLE \stepto \TRAP
-   }
+   \begin{array}{lcl@{\qquad}l}
+   \UNREACHABLE &\stepto& \TRAP
+   \end{array}
 
 
 .. _exec-block:
@@ -776,13 +717,13 @@ Control Instructions
 
 2. Let :math:`L` be a label whose arity is :math:`n` and whose target is the end of the block.
 
-3. :ref:`Execute <exec-instr-seq-labelled>` the labelled instruction sequence :math:`\instr^\ast` with label :math:`L`.
+3. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
-   \frac{
-   }{
-     \BLOCK~[t^n]~\instr^\ast~\END \stepto \LABEL_n\{\epsilon\}~\instr^\ast~\END
-   }
+   \begin{array}{lcl@{\qquad}l}
+   \BLOCK~[t^n]~\instr^\ast~\END &\stepto&
+     \LABEL_n\{\epsilon\}~\instr^\ast~\END
+   \end{array}
 
 
 .. _exec-loop:
@@ -790,17 +731,15 @@ Control Instructions
 :math:`\LOOP~[t^?]~\instr^\ast~\END`
 ....................................
 
-1. Let :math:`n` be the arity of the :ref:`result type <syntax-resulttype>` :math:`t^?`.
+1. Let :math:`L` be the label whose arity is :math:`0` and whose target is the start of the loop.
 
-2. Let :math:`L` be the label whose arity is :math:`0` and whose target is the start of the loop.
-
-3. :ref:`Execute <exec-instr-seq-labelled>` the labelled instruction sequence :math:`\instr^\ast` with label :math:`L`.
+2. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 .. math::
-   \frac{
-   }{
-     \LOOP~[t^?]~\instr^\ast~\END \stepto \LABEL_0\{\LOOP~[t^?]~\instr^\ast~\END\}~\instr^\ast~\END
-   }
+   \begin{array}{lcl@{\qquad}l}
+   \LOOP~[t^?]~\instr^\ast~\END &\stepto&
+     \LABEL_0\{\LOOP~[t^?]~\instr^\ast~\END\}~\instr^\ast~\END
+   \end{array}
 
 
 .. _exec-if:
@@ -810,29 +749,29 @@ Control Instructions
 
 1. Assert: due to :ref:`validation <valid-if>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-2. Pop the value :math:`\I32.\CONST~n` from the stack.
+2. Pop the value :math:`\I32.\CONST~c` from the stack.
 
-3. If :math:`n` is not :math:`0`, then:
+3. Let :math:`n` be the arity of the :ref:`result type <syntax-resulttype>` :math:`t^?`.
 
-   a. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t^?]~\instr_1^\ast~\END`.
+4. Let :math:`L` be the label whose arity is :math:`0` and whose target is the start of the loop.
 
-4. Else:
+5. If :math:`c` is not :math:`0`, then:
 
-   a. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t^?]~\instr_2^\ast~\END`.
+   a. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr_1^\ast` with label :math:`L`.
 
-.. math::
-   \frac{
-     n \neq 0
-   }{
-     (\I32.\CONST~n)~\IF~[t^?]~\instr_1^\ast~\END \stepto \BLOCK~[t^?]~\instr_1^\ast~\END
-   }
+6. Else:
+
+   a. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr_2^\ast` with label :math:`L`.
 
 .. math::
-   \frac{
-     n = 0
-   }{
-     (\I32.\CONST~n)~\IF~[t^?]~\instr_2^\ast~\END \stepto \BLOCK~[t^?]~\instr_2^\ast~\END
-   }
+   \begin{array}{lcl@{\qquad}l}
+   (\I32.\CONST~c)~\IF~[t^n]~\instr_1^\ast~\END &\stepto&
+     \LABEL_n\{\epsilon\}~\END
+     & (\mbox{if}~c \neq 0) \\
+   (\I32.\CONST~c)~\IF~[t^n]~\instr_2^\ast~\END &\stepto&
+     \LABEL_n\{\epsilon\}~\instr_2^\ast~\END
+     & (\mbox{if}~c = 0) \\
+   \end{array}
 
 
 .. _exec-br:
@@ -863,11 +802,9 @@ Control Instructions
 7. Push the values :math:`v^n` to the stack.
 
 .. math::
-   \frac{
-     n \neq 0
-   }{
-     \LABEL_n\{e^\ast\}~L^j[v^n~(\BR~l)]~\END \stepto v^n~e^\ast
-   }
+   \begin{array}{lcl@{\qquad}l}
+   \LABEL_n\{\instr^\ast\}~L^j[v^n~(\BR~l)]~\END &\stepto& v^n~\instr^\ast
+   \end{array}
 
 
 .. _exec-br_if:
@@ -888,18 +825,12 @@ Control Instructions
    a. Do nothing.
 
 .. math::
-   \frac{
-     n \neq 0
-   }{
-     (\I32.\CONST~n)~(\BRIF~l) \stepto (\BR~l)
-   }
-
-.. math::
-   \frac{
-     n = 0
-   }{
-     (\I32.\CONST~n)~(\BRIF~l) \stepto \epsilon
-   }
+   \begin{array}{lcl@{\qquad}l}
+   (\I32.\CONST~n)~(\BRIF~l) &\stepto& (\BR~l)
+     & (\mbox{if}~n \neq 0) \\
+   (\I32.\CONST~n)~(\BRIF~l) &\stepto& \epsilon
+     & (\mbox{if}~n = 0) \\
+   \end{array}
 
 
 .. _exec-br_table:
@@ -924,18 +855,12 @@ Control Instructions
    a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l_N)`.
 
 .. math::
-   \frac{
-     l^\ast[\uint(i)] = l_i
-   }{
-     (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) \stepto (\BR~l_i)
-   }
-
-.. math::
-   \frac{
-     |l^\ast| \leq \uint(i)
-   }{
-     (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) \stepto (\BR~l_N)
-   }
+   \begin{array}{lcl@{\qquad}l}
+   (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) &\stepto& (\BR~l_i)
+     & (\mbox{if}~l^\ast[\uint(i)] = l_i) \\
+   (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) &\stepto& (\BR~l_N)
+     & (\mbox{if}~|l^\ast| \leq \uint(i)) \\
+   \end{array}
 
 
 .. _exec-return:
@@ -964,10 +889,9 @@ Control Instructions
 9. Push :math:`v^n` to the stack.
 
 .. math::
-   \frac{
-   }{
-     \LOCAL_n\{F\}~L^k[v^n~\RETURN]~\END \stepto v^n
-   }
+   \begin{array}{lcl@{\qquad}l}
+   \LOCAL_n\{F\}~L^k[v^n~\RETURN]~\END &\stepto& v^n
+   \end{array}
 
 
 .. _exec-call:
@@ -981,15 +905,13 @@ Control Instructions
 
 3. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`F.\MODULE.\FUNCS[x]`.
 
-4. Invoke the function instance :math:`\X{f}`.
+4. :ref:`Invoke <exec-invoke>` the function instance :math:`\X{f}`.
 
 .. math::
-   \frac{
-     F.\MODULE.\FUNCS[x] = \X{f}
-   }{
-     F; \CALL~x \stepto F; (\INVOKE~\X{f})
-   }
-
+   \begin{array}{lcl@{\qquad}l}
+   F; (\CALL~x) &\stepto& F; (\INVOKE~\X{f})
+     & (\mbox{if}~F.\MODULE.\FUNCS[x] = \X{f})
+   \end{array}
 
 
 .. _exec-call_indirect:
@@ -1017,11 +939,11 @@ Control Instructions
 
 10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\ELEM`, then:
 
-   a. Trap.
+    a. Trap.
 
 11. If :math:`\X{tab}.\ELEM[i]` is uninitialized, then:
 
-   a. Trap.
+    a. Trap.
 
 12. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`\X{tab}.\ELEM[i]`.
 
@@ -1031,41 +953,20 @@ Control Instructions
 
 15. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
 
-   a. Trap.
+    a. Trap.
 
-16. Invoke the function instance :math:`\X{f}`.
-
-.. math::
-   \frac{
-     |S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM| \leq \uint(i)
-   }{
-     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \stepto S; F; \TRAP
-   }
+16. :ref:`Invoke <exec-invoke>` the function instance :math:`\X{f}`.
 
 .. math::
-   \frac{
-     S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[\uint(i)] = \epsilon
-   }{
-     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \stepto S; F; \TRAP
-   }
-
-.. math::
-   \frac{
-     S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[\uint(i)] = f
-     \qquad
-     F.\MODULE.\TYPES[x] \neq f.\MODULE.\TYPES[f.\FUNC.\TYPE]
-   }{
-     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \stepto S; F; \TRAP
-   }
-
-.. math::
-   \frac{
-     S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[\uint(i)] = f
-     \qquad
-     F.\MODULE.\TYPES[x] = f.\MODULE.\TYPES[f.\FUNC.\TYPE]
-   }{
-     S; F; (\I32.\CONST~i)~\CALLINDIRECT~x \stepto S; F; (\INVOKE~f)
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; (\INVOKE~f)
+     & \begin{array}[t]{@{}r@{~}l@{}}
+       (\mbox{if} & S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[\uint(i)] = f \\
+       \wedge & F.\MODULE.\TYPES[x] = f.\MODULE.\TYPES[f.\FUNC.\TYPE])
+       \end{array} \\
+   S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; \TRAP
+     & (\mbox{otherwise})
+   \end{array}
 
 
 .. _exec-instr-invoke:
@@ -1075,7 +976,7 @@ Invocation of :ref:`Function Instance <syntax-funcinst>` :math:`f`
 
 1. Assert: due to :ref:`validation <valid-func>`, :math:`f.\MODULE.\TYPES[f.\FUNC.\TYPE]` is defined.
 
-2. Let :math:`[t_1^n] \to [t_2^m]` be the `function type <syntax-functype>` :math:`f.\MODULE.\TYPES[f.\FUNC.\TYPE]`.
+2. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\MODULE.\TYPES[f.\FUNC.\TYPE]`.
 
 3. Let :math:`t^n` be the list of :ref:`value types <syntax-valtype>` :math:`f.\FUNC.\LOCALS`.
 
@@ -1097,15 +998,14 @@ Invocation of :ref:`Function Instance <syntax-funcinst>` :math:`f`
    terminate
 
 .. math::
-   \frac{
-     f.\FUNC = \{ \TYPE~x, \LOCALS~t^ast, \BODY~\instr^\ast~\END \}
-     \qquad
-     f.\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m]
-     \qquad
-     F = \{ \MODULE~f.\MODULE, \LOCALS~v^n~(t.\CONST 0)^\ast \}
-   }{
-     v^n~(\INVOKE~f) \stepto \LOCAL_n\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
-   }
+   \begin{array}{lcl@{\qquad}l}
+   v^n~(\INVOKE~f) &\stepto& \LOCAL_n\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
+     & \begin{array}[t]{@{}r@{~}l@{}}
+       (\mbox{where} & f.\FUNC = \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\instr^\ast~\END \} \\
+       \wedge & f.\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m] \\
+       \wedge & F = \{ \MODULE~f.\MODULE, \LOCALS~v^n~(t.\CONST~0)^\ast \})
+       \end{array} \\
+   \end{array}
 
 
 .. _exec-instr-seq:
@@ -1113,6 +1013,50 @@ Invocation of :ref:`Function Instance <syntax-funcinst>` :math:`f`
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
+
+.. _exec-instr-seq-enter:
+
+Entering :math:`\instr^\ast` with label :math:`L`
+.................................................
+
+1. Push :math:`L` to the stack.
+
+2. :ref:`Jump <exec-jump>` to the start of the instruction sequence :math:`\instr^\ast`.
+
+.. note::
+   No reduction rule is needed in the formal notation for entering an instruction sequence.
+
+
+.. _exec-instr-seq-exit:
+
+Exiting :math:`\instr^\ast` with label :math:`L`
+................................................
+
+When the end of an instruction sequence is reached without a jump or trap aborting it, then the following steps are performed.
+
+1. Let :math:`n` be the arity of :math:`L`.
+
+2. Assert: due to :ref:`validation <valid-instr-seq>`, there are :math:`n` values on the top of the stack.
+
+3. Pop the results :math:`v^n` from the stack.
+
+4. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
+
+5. Pop the label from the stack.
+
+6. Push :math:`v^n` back to the stack.
+
+7. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \LABEL_n\{\instr^\ast\}~v^n~\END &\stepto& v^n
+   \end{array}
+
+.. note::
+   This semantics also applies to the instruction sequence contained in a |LOOP| instruction.
+   Therefor, execution of a loop falls off the end if no backwards branch is performed explicitly.
+
 
 Plain Sequences :math:`\instr^\ast`
 ...................................
