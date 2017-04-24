@@ -5,5 +5,6 @@ Execution
    :maxdepth: 2
 
    conventions
+   numerics
    instructions
    modules

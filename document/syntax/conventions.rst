@@ -47,6 +47,8 @@ When dealing with syntactic constructs the following notation is also used:
 
 * :math:`s[i]` denotes the :math:`i`-th element of a sequence :math:`s`, starting from :math:`0`.
 
+* :math:`s[i:n]` denotes the sub-sequence of length :math:`n` a sequence :math:`s` that consists of its :math:`i`-th to :math:`(i+n-1)`-the element.
+
 Productions of the following form are interpreted as *records* that map a fixed set of fields :math:`\K{field}_i` to values :math:`x_i`, respectively:
 
 .. math::

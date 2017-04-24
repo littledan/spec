@@ -4,6 +4,9 @@
 Instructions
 ------------
 
+.. todo::
+   Formatting
+
 
 .. _exec-instr-numeric:
 .. index:: numeric instruction
@@ -369,35 +372,26 @@ Memory Instructions
 
 11. If :math:`\X{ea} + w` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
-   a. Trap.
+    a. Trap.
 
-12. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\DATA[\X{ea}:\X{ea}+w]`.
+12. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\DATA[\X{ea}:w]`.
 
 13. Let :math:`c` be the result of computing :math:`\ofbits_t(b^\ast)`.
 
 14. Push the value :math:`t.\CONST~c` to the stack.
 
 .. math::
-   \frac{
-     \X{ea} = \uint{k} + \memarg.\OFFSET
-     \qquad
-     \X{ea} + |t| > |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA|
-   }{
-     S; F; (\I32.\CONST~k)~(t.\LOAD~\memarg) \stepto S; F; \TRAP
-   }
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     \X{ea} = \uint{k} + \memarg.\OFFSET
-     \qquad
-     \X{ea} + |t| \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA|
-     \\
-     b^\ast = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:\X{ea}+|t|]
-     \end{array}
-   }{
-     S; F; (\I32.\CONST~k)~(t.\LOAD~\memarg) \stepto S; F; (t.\CONST~\ofbits_t(b^\ast))
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(t.\LOAD~\memarg) &\stepto&
+     S; F; (t.\CONST~\ofbits_t(b^\ast))
+     & \begin{array}[t]{@{}r@{~}l@{}}
+       (\mbox{if} & \X{ea} = \uint{k} + \memarg.\OFFSET \\
+       \wedge & \X{ea} + |t| \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+       \wedge & b^\ast = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|])
+       \end{array} \\
+   S; F; (\I32.\CONST~k)~(t.\LOAD~\memarg) &\stepto& S; F; \TRAP
+     & (\mbox{otherwise}) \\
+   \end{array}
 
 .. note::
    The alignment :math:`\memarg.\ALIGN` does not affect the semantics.
@@ -432,9 +426,9 @@ Memory Instructions
 
 11. If :math:`\X{ea} + N` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
-   a. Trap.
+    a. Trap.
 
-12. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\DATA[\X{ea}:\X{ea}+N]`.
+12. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\DATA[\X{ea}:N]`.
 
 13. Let :math:`n` be the result of computing :math:`\ofbits_{\iX{N}}(b^\ast)`.
 
@@ -443,26 +437,17 @@ Memory Instructions
 15. Push the value :math:`t.\CONST~c` to the stack.
 
 .. math::
-   \frac{
-     \X{ea} = \uint{k} + \memarg.\OFFSET
-     \qquad
-     \X{ea} + N > |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA|
-   }{
-     S; F; (\I32.\CONST~k)~(t.\LOAD{N}\K{\_}\sx~\memarg) \stepto S; F; \TRAP
-   }
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     \X{ea} = \uint{k} + \memarg.\OFFSET
-     \qquad
-     \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA|
-     \\
-     b^\ast = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:\X{ea}+N]
-     \end{array}
-   }{
-     S; F; (\I32.\CONST~k)~(t.\LOAD{N}\K{\_}\sx~\memarg) \stepto S; F; (t.\CONST~\extend_{N,|t|,\sx}(\ofbits_t(b^\ast)))
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
+     S; F; (t.\CONST~\extend_{N,|t|,\sx}(\ofbits_t(b^\ast)))
+     & \begin{array}[t]{@{}r@{~}l@{}}
+       (\mbox{if} & \X{ea} = \uint{k} + \memarg.\OFFSET \\
+       \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+       \wedge & b^\ast = S.\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N])
+       \end{array} \\
+   S; F; (\I32.\CONST~k)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto& S; F; \TRAP
+     & (\mbox{otherwise}) \\
+   \end{array}
 
 
 .. _exec-store:
@@ -492,7 +477,7 @@ Memory Instructions
 
 11. If :math:`\X{ea} + w` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
-   a. Trap.
+    a. Trap.
 
 12. Assert: due to :ref:`validation <valid-store>`, a value of :ref:`value type <syntax-valtype>` :math:`t` is on the top of the stack.
 
@@ -500,29 +485,20 @@ Memory Instructions
 
 14. Let :math:`b^\ast` be the byte sequence resulting from computing :math:`\tobits_t(c)`.
 
-15. Replace the bytes :math:`\X{mem}.\DATA[\X{ea}:\X{ea}+w]` with :math:`b^\ast`.
+15. Replace the bytes :math:`\X{mem}.\DATA[\X{ea}:w]` with :math:`b^\ast`.
 
 .. math::
-   \frac{
-     \X{ea} = \uint{k} + \memarg.\OFFSET
-     \qquad
-     \X{ea} + |t| > |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA|
-   }{
-     S; F; (t.\CONST~c)~(\I32.\CONST~k)~(t.\STORE~\memarg) \stepto S; F; \TRAP
-   }
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     \X{ea} = \uint{k} + \memarg.\OFFSET
-     \qquad
-     \X{ea} + |t| \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA|
-     \\
-     S' = S~\mbox{with}~\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:\X{ea}+|t|] = \tobits_t(c)
-     \end{array}
-   }{
-     S; F; (t.\CONST~c)~(\I32.\CONST~k)~(t.\STORE~\memarg) \stepto S'; F; \epsilon
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(t.\STORE~\memarg) &\stepto&
+     S'; F; \epsilon
+     & \begin{array}[t]{@{}r@{~}l@{}}
+       (\mbox{if} & \X{ea} = \uint{k} + \memarg.\OFFSET \\
+       \wedge & \X{ea} + |t| \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+       \wedge & S' = S~\mbox{with}~\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:|t|] = \tobits_t(c)
+       \end{array} \\
+   S; F; (\I32.\CONST~k)~(t.\STORE~\memarg) &\stepto& S; F; \TRAP
+     & (\mbox{otherwise}) \\
+   \end{array}
 
 
 .. _exec-storen:
@@ -552,7 +528,7 @@ Memory Instructions
 
 11. If :math:`\X{ea} + N` is larger than the length of :math:`\X{mem}.\DATA`, then:
 
-   a. Trap.
+    a. Trap.
 
 12. Assert: due to :ref:`validation <valid-storen>`, a value of :ref:`value type <syntax-valtype>` :math:`t` is on the top of the stack.
 
@@ -562,29 +538,20 @@ Memory Instructions
 
 15. Let :math:`b^\ast` be the byte sequence resulting from computing :math:`\tobits_t(n)`.
 
-16. Replace the bytes :math:`\X{mem}.\DATA[\X{ea}:\X{ea}+N]` with :math:`b^\ast`.
+16. Replace the bytes :math:`\X{mem}.\DATA[\X{ea}:N]` with :math:`b^\ast`.
 
 .. math::
-   \frac{
-     \X{ea} = \uint{k} + \memarg.\OFFSET
-     \qquad
-     \X{ea} + N > |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA|
-   }{
-     S; F; (t.\CONST~c)~(\I32.\CONST~k)~(t.\STORE{N}~\memarg) \stepto S; F; \TRAP
-   }
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     \X{ea} = \uint{k} + \memarg.\OFFSET
-     \qquad
-     \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA|
-     \\
-     S' = S~\mbox{with}~\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:\X{ea}+N] = \tobits_t(\wrap_N(c))
-     \end{array}
-   }{
-     S; F; (t.\CONST~c)~(\I32.\CONST~k)~(t.\STORE{N}~\memarg) \stepto S'; F; \epsilon
-   }
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~k)~(t.\STORE{N}~\memarg) &\stepto&
+     S'; F; \epsilon
+     & \begin{array}[t]{@{}r@{~}l@{}}
+       (\mbox{if} & \X{ea} = \uint{k} + \memarg.\OFFSET \\
+       \wedge & \X{ea} + N \leq |S.\MEMS[F.\MODULE.\MEMS[0]].\DATA| \\
+       \wedge & S' = S~\mbox{with}~\MEMS[F.\MODULE.\MEMS[0]].\DATA[\X{ea}:N] = \tobits_t(\wrap_N(c))
+       \end{array} \\
+   S; F; (\I32.\CONST~k)~(t.\STORE{N}~\memarg) &\stepto& S; F; \TRAP
+     & (\mbox{otherwise}) \\
+   \end{array}
 
 
 .. _exec-current_memory:
@@ -995,7 +962,7 @@ Invocation of :ref:`Function Instance <syntax-funcinst>` :math:`f`
 10. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
 
 .. todo::
-   terminate
+   Returning
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -1057,6 +1024,9 @@ When the end of an instruction sequence is reached without a jump or trap aborti
    This semantics also applies to the instruction sequence contained in a |LOOP| instruction.
    Therefor, execution of a loop falls off the end if no backwards branch is performed explicitly.
 
+.. todo::
+   Scratch below
+
 
 Plain Sequences :math:`\instr^\ast`
 ...................................
@@ -1080,6 +1050,9 @@ Plain Sequences :math:`\instr^\ast`
          - Pop the value from the stack.
 
       ii. Trap.
+
+.. todo::
+   Finish
 
 .. math::
    \frac{

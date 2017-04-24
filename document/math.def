@@ -234,6 +234,7 @@
 .. |TRAP| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{trap}}
 .. |LABEL| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{label}}
 .. |LOCAL| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{local}}
+.. |FRAME| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{frame}}
 .. |INVOKE| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{invoke}}
 .. |INSTANTIATE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{instantiate}}
 .. |INITIALIZE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{initialize}}
@@ -303,3 +304,12 @@
 .. Execution, notation
 
 .. |stepto| mathdef:: \hookrightarrow
+
+
+.. Numerics, meta functions
+
+.. |ofbits| mathdef:: \F{ofbits}
+.. |tobits| mathdef:: \F{tobits}
+.. |uint| mathdef:: \F{uint}
+.. |wrap| mathdef:: \F{wrap}
+.. |extend| mathdef:: \F{extend}

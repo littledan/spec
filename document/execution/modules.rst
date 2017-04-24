@@ -1,6 +1,9 @@
 Modules
 -------
 
+.. todo::
+   Work in progress
+
 
 .. _exec-module:
 .. index:: ! instantiation, module, instance, store
@@ -11,7 +14,7 @@ Instantiation
 Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>` :math:`m` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^\ast` supplying the required imports as follows.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{rlll}
    \F{alloctable}(S, \table) &=& S', \tableaddr \\[1ex]
    \mbox{where:} \\[1ex]
    \tableinst &=& \{ \ELEM~(\epsilon)^{\limits.\MIN}, \MAX~\limits.\MAX \}
@@ -21,7 +24,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
    \end{array}
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{rlll}
    \F{allocmem}(S, \mem) &=& S', \memaddr \\[1ex]
    \mbox{where:} \\[1ex]
    \meminst &=& \{ \DATA~(\hex{00})^{\limits.\MIN}, \MAX~\limits.\MAX \}
@@ -31,7 +34,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
    \end{array}
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{rlll}
    \F{allocglobal}(S, \global) &=& S', \globaladdr \\[1ex]
    \mbox{where:} \\[1ex]
    \globalinst &=& \{ \VALUE~(t.\CONST~0), \MUT~\mut \}
@@ -41,14 +44,14 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
    \end{array}
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{rlll}
    \F{alloc}X^\ast(S_0, X^n) &=& S_n, a^n \\[1ex]
    \mbox{where for all $i < n$:} \\[1ex]
    S_{i+1}, a^n[i] &=& \F{alloc}X(S_i, X^n[i])
    \end{array}
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{rlll}
    \F{allocmodule}(S, \module, \externval_{\F{im}}^\ast) &=& S', \moduleinst \\[1ex]
    \mbox{where:} \\[1ex]
    \moduleinst &=& \{~

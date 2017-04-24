@@ -1,26 +1,109 @@
-.. index:: ! execution
+.. index:: ! execution, stack, store
 
 Conventions
 -----------
 
+WebAssembly code is run by :ref:`instantiating <instantiation>` a module and :ref:`invoking <exec-invocation>` one of its exported functions.
+
+The behavior of executing WebAssembly code is defined in terms of an *abstract machine*.
+For each instruction, there is a rule that specifies the effect of its execution.
+Furthermore, there are rules describing the instantiation of a module.
+As with :ref:`validation <validation>`, all rules are given in two *equivalent* forms:
+
+1. In *prose*, describing the execution in intuitive form.
+2. In *formal notation*, describing the rule in mathematical form.
+
+.. note::
+   As with validation, the prose and formal rules are equivalent,
+   so that understanding of the formal notation is *not* required to read this specification.
+   The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.
+
+In both cases, the rules operate on both an abstract *stack* that records operand values and control constructs and an abstract *store* containing global mutable state.
+These and other runtime structures are made precise in terms of abstract syntax.
+
+
+.. _syntax-val:
+.. index:: ! value, constant
+   pair: abstract syntax; value
+
 Values
 ~~~~~~
+
+WebAssembly computations manipulate *values* of the four basic :ref:`value types <syntax-valtype>`: :ref:`uninterpreted integers <syntax-int>` and :ref:`floating-point data <syntax-float>` of 32 or 64 bit width, respectively.
+
+In most places of the semantics, values of different types can occur.
+In order to avoid ambiguities, values are therefor represented with an abstract syntax that makes their type explicit.
+It is convenient to reuse the same notation as for the instructions producing them:
 
 .. math::
    \begin{array}{llll}
    \production{(value)} & \val &::=&
-     \valtype.\CONST~c \\
+     \I32.\CONST~\i32 ~|~
+     \I64.\CONST~\i64 ~|~
+     \F32.\CONST~\f32 ~|~
+     \F64.\CONST~\f64
    \end{array}
+
+
+.. _store:
+.. _syntax-store:
+.. index:: ! store, table instance, memory instance, global instance, module
+   pair: abstract syntax; store
+
+Store
+~~~~~
+
+The *store* represents all *mutable* global state that can be manipulated by WebAssembly programs.
+It consists of the runtime representation of all *instances* of :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been *allocated* during the life time of the execution engine. [#gc]_
+
+Syntactically, the store is defined as a :ref:`record <syntax-record>` of respective lists.
+
+.. math::
+   \begin{array}{llll}
+   \production{(store)} & \store &::=& \{~
+     \begin{array}[t]{l@{~}ll}
+     \TABLES & \tableinst^\ast, \\
+     \MEMS & \meminst^\ast, \\
+     \GLOBALS & \globalinst^\ast ~\} \\
+     \end{array}
+   \end{array}
+
+.. note::
+   Since the store holds the state of arbitrary many, possibly interacting, :ref:`module instances <syntax-moduleinst>`, it can host multiple tables and memories.
+
+   :ref:`Function instances <syntax-funcinst>` and :ref:`module instances <syntax-moduleinst>` are not part of the store because they are not mutable.
+   In particular, there is no requirement that function instances have a unique identity, since it is not observable.
+   :ref:`Embedders <embedder>` that make the identity of function instances observable need to provide a suitable definition.
+
+.. [#gc]
+   In practice, implementations may apply techniques like garbage collection to remove objects from the store that are no longer referenced.
+   However, such techniques are not semantically observable,
+   and hence outside the scope of this specification.
+
+
+Convention
+..........
+
+* The meta variable :math:`S` ranges over stores where clear from context.
 
 
 .. _syntax-addr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
 .. _syntax-globaladdr:
-.. index:: ! address
+.. index:: ! address, store, table instance, memory instance, global instance
+   pair: abstract syntax; table address
+   pair: abstract syntax; memory address
+   pair: abstract syntax; global address
+   pair: table; address
+   pair: memory; address
+   pair: global; address
 
 Addresses
 ~~~~~~~~~
+
+:ref:`Table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
+These are simply indices into the respective store component.
 
 .. math::
    \begin{array}{llll}
@@ -35,15 +118,24 @@ Addresses
    \end{array}
 
 .. note::
-   A *memory address* denotes the abstract address of a memory *instance* in the store,
-   not an offset *in* a linear memory instance.
+   There is no specific limit on the number of allocations of store objects,
+   hence addresses can be arbitrarily large natural numbers.
+
+   A *memory address* |memaddr| denotes the abstract address of a memory *instance* in the store,
+   not an offset *inside* a memory instance.
 
 
 .. _syntax-moduleinst:
-.. index:: ! instance
+.. index:: ! instance, function type, function instance, table instance, memory instance, global instance, export instance, table address, memory address, global address, index
+   pair: abstract syntax; module instance
+   pair: module; instance
 
 Module Instances
 ~~~~~~~~~~~~~~~~
+
+A *module instance* is the runtime representation of a :ref:`module <syntax-module>`.
+It is created by :ref:`instantiating <instantiation>` a module,
+and collects runtime representations of all entities that are imported, defined, or exported by the module.
 
 .. math::
    \begin{array}{llll}
@@ -54,16 +146,27 @@ Module Instances
      \TABLES & \tableaddr^\ast, \\
      \MEMS & \memaddr^\ast, \\
      \GLOBALS & \globaladdr^\ast \\
-     \EXPORTS & \externval^\ast ~\} \\
+     \EXPORTS & \exportinst^\ast ~\} \\
      \end{array}
    \end{array}
 
+Each component contains the runtime instances of the respective entities from the original module -- whether imported or defined -- in the order of their static :ref:`indices <syntax-index>`.
+:ref:`Table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
+
+It is an invariant of the semantics that all :ref:`export instances <syntax-exportinst>` in a given module instance have different :ref:`names <syntax-name>`.
+
 
 .. _syntax-funcinst:
-.. index:: ! table instance
+.. index:: ! function instance, module instance, function, closure
+   pair: abstract syntax; function instance
+   pair: function; instance
 
 Function Instances
 ~~~~~~~~~~~~~~~~~~
+
+A *function instance* is the runtime representation of a :ref:`function <syntax-func>`.
+It is effectively a *closure* of the original function over the runtime :ref:`module instance <syntax-moduleinst>` of its own :ref:`module <syntax-module>`.
+The module instance is used to resolve references to other non-local definitions during execution of the function.
 
 .. math::
    \begin{array}{llll}
@@ -74,37 +177,70 @@ Function Instances
 
 .. _syntax-tableinst:
 .. _syntax-funcelem:
-.. index:: ! table instance
+.. index:: ! table instance, table, function instance
+   pair: abstract syntax; table instance
+   pair: table; instance
 
 Table Instances
 ~~~~~~~~~~~~~~~
 
+A *table instance* is the runtime representation of a :ref:`table <syntax-table>`.
+It holds a vector of *function elements* and an optional maximum size, if one was specified at the definition site of the table.
+
+Each function element is either empty, representing an uninitialized table entry, or a :ref:`function instance <syntax-funcinst>`.
+Function elements can be mutated through the execution of an :ref:`element segment <syntax-elem>` or by other means provided by the :ref:`embedder <embedder>`.
+
 .. math::
    \begin{array}{llll}
    \production{(table instance)} & \tableinst &::=&
-     \{ \ELEM~(\func^?)^\ast, \MAX~\u32^? \} \\
+     \{ \ELEM~\vec(\funcelem), \MAX~\u32^? \} \\
+   \production{(function element)} & \funcelem &::=&
+     \funcinst^? \\
    \end{array}
+
+It is an invariant of the semantics that the length of the element vector never exceeds the maximum size, if present.
+
+.. note::
+   Other table elements may be added in future versions of WebAssembly.
 
 
 .. _syntax-meminst:
-.. index:: ! memory instance
+.. index:: ! memory instance, memory, byte, ! page size, memory type
+   pair: abstract syntax; memory instance
+   pair: memory; instance
 
 Memory Instances
 ~~~~~~~~~~~~~~~~
 
+A *memory instance* is the runtime representation of a linear :ref:`memory <syntax-memory>`.
+It holds a vector of bytes and an optional maximum size, if one was specified at the definition site of the table.
+
+The length of the vector always is a multiple of the *page size*, which is defined to be the constant :math:`65536` -- abbreviated to :math:`64\,\F{Ki}`.
+Like in a :ref:`memory type <syntax-memtype>`, the maximum size is given in units this page size.
+
+The bytes can be mutated through specific instructions, the execution of an :ref:`data segment <data-elem>`, or by other means provided by the :ref:`embedder <embedder>`.
+
 .. math::
    \begin{array}{llll}
    \production{(memory instance)} & \meminst &::=&
-     \{ \DATA~\by^\ast, \MAX~\u32^? \} \\
+     \{ \DATA~\vec(\by), \MAX~\u32^? \} \\
    \end{array}
 
+It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size, if present.
 
-.. _syntax-tableinst:
-.. _syntax-funcelem:
-.. index:: ! table instance
+
+.. _syntax-globalinst:
+.. index:: ! global instance, value
+   pair: abstract syntax; global instance
+   pair: global; instance
 
 Global Instances
 ~~~~~~~~~~~~~~~~
+
+A *global instance* is the runtime representation of a :ref:`global variable <syntax-global>`.
+It holds an individual :ref:`value <syntax-val>` and a flag indicating whether it is mutable.
+
+The value of mutable globals can be mutated through specific instructions or by other means provided by the :ref:`embedder <embedder>`.
 
 .. math::
    \begin{array}{llll}
@@ -115,9 +251,14 @@ Global Instances
 
 .. _syntax-exportinst:
 .. index:: ! export instance, name, external value
+   pair: abstract syntax; export instance
+   pair: export; instance
 
 Export Instances
 ~~~~~~~~~~~~~~~~
+
+An *export instance* is the runtime representation of an :ref:`export <syntax-export>`.
+It defines the export's :ref:`name <syntax-name>` and the :ref:`external value <syntax-externval>` being exported.
 
 .. math::
    \begin{array}{llll}
@@ -133,6 +274,9 @@ Export Instances
 
 External Values
 ~~~~~~~~~~~~~~~
+
+An *external value* is the runtime representation of an entity that can be imported or exported.
+It is either a :ref:`function instance <syntax-funcinst>`, or an :ref:`address <syntax-addr>` denoting a :ref:`table instance <syntax-tableinst>`, :ref:`memory instance <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` in the shared :ref:`store <syntax-store>`.
 
 .. math::
    \begin{array}{llll}
@@ -166,16 +310,18 @@ The following auxiliary notation is defined for sequences of external values, fi
 External Types
 ~~~~~~~~~~~~~~
 
-*External types* classify imports and exports and their respective types.
+*External types* classify :ref:`external values <syntax-externval>`, and thereby imports and exports, with respective types.
 
 .. math::
    \begin{array}{llll}
    \production{external types} & \externtype &::=&
-     \FUNC~\functype ~|~ \\&&&
-     \TABLE~\tabletype ~|~ \\&&&
-     \MEM~\memtype ~|~ \\&&&
+     \FUNC~\functype ~|~
+     \TABLE~\tabletype ~|~
+     \MEM~\memtype ~|~
      \GLOBAL~\globaltype \\
    \end{array}
+
+These types are used in the definition of :ref:`instantiation <instantiation>`.
 
 
 Conventions
@@ -192,149 +338,117 @@ The following auxiliary notation is defined for sequences of external types, fil
    \end{array}
 
 
-.. _store:
-.. _syntax-store:
-.. index:: ! store
-
-Store
-~~~~~
-
-.. math::
-   \begin{array}{llll}
-   \production{(store)} & \store &::=& \{~
-     \begin{array}[t]{l@{~}ll}
-     \TABLES & \tableinst^\ast, \\
-     \MEMS & \meminst^\ast, \\
-     \GLOBALS & \globalinst^\ast ~\} \\
-     \end{array}
-   \end{array}
-
-Convention
-..........
-
-* The meta variable :math:`S` ranges over stores where clear from context.
-
-
+.. _stack:
 .. _frame:
-.. _syntax-frame:
-.. index:: ! frame
-
-Frame
-~~~~~
-
-.. math::
-   \begin{array}{llll}
-   \production{(store)} & \frame &::=&
-     \{\MODULE~\moduleinst; \LOCALS~\val^\ast\} \\
-   \end{array}
-
-
 .. _label:
+.. _syntax-frame:
 .. _syntax-label:
-.. index:: ! label
+.. index:: ! stack, ! frame, ! label
+   pair: abstract syntax; frame
+   pair: abstract syntax; label
 
-Label
+Stack
 ~~~~~
+
+Besides the :ref:`store <store>`, most :ref:`instructions <syntax-instr>` interact with an implicit *stack*.
+The stack contains three kinds of entries:
+
+* *Values*: communicating the *operands* (arguments and results) of instructions.
+
+* *Labels*: recording information about the active :ref:`structured control instructions <syntax-instr-control>` that can be targeted by branches.
+
+* *Locals*: representing the *call frames* of active :ref:`function <syntax-func>` calls.
+
+All these entries can occur on the stack in almost any order during the execution of a program.
+
+.. note::
+   It is possible to model the semantics using two or even three separate stacks for operands, control constructs, and calls.
+   However, they are interdependent, so that additional book keeping about associated stack heights would be required.
+   For the purpose of this specification, an interleaved representation is simpler.
+
+Abstract syntax is adopted for stack entries as follows.
+
+:ref:`Values <syntax-val>` are represented by themselves.
+
+Labels carry an argument arity :math:`n` and the branch *target*, which is expressed syntactically as an :ref:`instruction <syntax-instr>` sequence:
 
 .. math::
    \begin{array}{llll}
-   \production{(store)} & \label &::=& \{~
+   \production{(label)} & \label &::=&
      \LABEL_n\{\instr^\ast\} \\
    \end{array}
+
+Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branch is taken, "replacing" the original control construct.
+
+.. note::
+   For example, a loop label has the form
+
+   .. math::
+      \LABEL_n\{\LOOP~[t^?]~\instr~\dots~\END\}
+
+   When performing a branch to this label, this restarts the loop from the beginning.
+   Conversely, a simple block label has the form
+
+   .. math::
+      \LABEL_n\{\epsilon\}
+
+   When branching, the original block is replaced by an empty continuation, thereby ending it and proceeding with consecutive instructions.
+
+Activation frames carry the return arity of the respective function, and hold the values of its locals (including arguments) in the order corresponding to their static :ref:`local indices <syntax-localidx>`, as well as a reference to the function's own :ref:`module instance <syntax-moduleinst>`:
+
+.. math::
+   \begin{array}{llll}
+   \production{(activation)} & \X{activation} &::=&
+     \FRAME_n\{\frame\} \\
+   \production{(frame)} & \frame &::=&
+     \{ \LOCALS~\val^\ast, \MODULE~\moduleinst\} \\
+   \end{array}
+
+The values of the locals are mutated by respective instructions.
+
+.. note::
+   In the current version of WebAssembly, the arities of labels and activations cannot be larger than :math:`1`.
+   This may be generalized in future versions.
+
+
+Conventions
+...........
+
+* The meta variable :math:`L` ranges over labels where clear from context.
+
+* The meta variable :math:`F` ranges over frames where clear from context.
 
 
 Textual Notation
 ~~~~~~~~~~~~~~~~
 
-Validation is specified by stylised rules for each relevant part of the :ref:`abstract syntax <syntax>`.
-The rules not only state constraints defining when a phrase is valid,
-they also classify it with a type.
-A phrase :math:`A` is said to be "valid with type :math:`T`",
-if all constraints expressed by the respective rules are met.
-The form of :math:`T` depends on what :math:`A` is.
+Execution is specified by stylised, step-wise rules for each :ref:`instruction <syntax-instr>` of the :ref:`abstract syntax <syntax>`.
 
-.. note::
-   For example, if :math:`A` is a :ref:`function <syntax-func>`,
-   then  :math:`T` is a :ref:`function type <syntax-functype>`;
-   for an :math:`A` that is a :ref:`global <syntax-global>`,
-   :math:`T` is a :ref:`global type <syntax-globaltype>`;
-   and so on.
+The rules implicitly assume a given :ref:`store <store>` :math:`S`.
+This store is mutated by *replacing* some of its components.
+Such replacement is assumed to apply globally.
 
-The rules implicitly assume a given :ref:`context <context>` :math:`C`.
-In some places, this context is locally extended to a context :math:`C'` with additional entries.
-The formulation "Under context :math:`C'`, ... *statement* ..." is adopted to express that the following statement must apply under the assumptions embodied in the extended context.
+The rules also assume the presence of a :ref:`stack <stack>`.
+:ref:`Values <syntax-value>`, :ref:`labels <syntax-label>`, and :ref:`frames <syntax-frame>` are pushed to and popped from the stack.
+Various rules require the stack to contain at least one frame,
+which is referred to as the *current* frame.
+
+In various places the rules contain *assertions* that express crucial invariants about the state of execution and explain why these are known to hold.
+
+The execution of an instruction may *trap*, in which case the entire computation is aborted and no further modifications to the store are performed by it.
+The execution of an instruction may also end in a *jump* to a designated target, which defines the next instruction to execute.
+In all other cases, :ref:`instruction sequences <syntax-instr-seq>` are implicitly executed in order.
 
 
 Formal Notation
 ~~~~~~~~~~~~~~~
 
 .. note::
-   This section gives a brief explanation of the notation for specifying typing rules formally.
+   This section gives a brief explanation of the notation for specifying execution formally.
    For the interested reader, a more thorough introduction can be found in respective text books. [#tapl]_
 
-The proposition that a phrase :math:`A` has a respective type :math:`T` is written :math:`A : T`.
-In general, however, typing is dependent on the context :math:`C`.
-To express this explicitly, the complete form is a *judgement* :math:`C \vdash A : T`,
-which says that :math:`A : T` holds under the assumptions encoded in :math:`C`.
-
-The formal typing rules use a standard approach for specifying type systems, rendering them into *deduction rules*.
-Every rule has the following general form:
-
-.. math::
-   \frac{
-     \X{premise}_1 \qquad \X{premise}_2 \qquad \dots \qquad \X{premise}_n
-   }{
-     \X{conclusion}
-   }
-
-Such a rule is read as a big implication: if all premises hold, then the conclusion holds.
-Some rules have no premises; they are *axioms* whose conclusion holds unconditionally.
-The conclusion always is a judgment :math:`C \vdash A : T`,
-and there is one respective rule for each relevant construct :math:`A` of the abstract syntax.
-
-.. note::
-   For example, the typing rule for the :ref:`instruction <syntax-instr-numeric>` :math:`\I32.\ADD` can be given as an axiom:
-
-   .. math::
-      \frac{
-      }{
-        C \vdash \I32.\ADD : [\I32~\I32] \to [\I32]
-      }
-
-   The instruction is always valid with type :math:`[\I32~\I32] \to [\I32`]
-   (saying that it consumes two |I32| values and produces one),
-   independent from any side conditions.
-
-   An instruction like |GETLOCAL| can be typed as follows:
-
-   .. math::
-      \frac{
-        C.\LOCAL[x] = t
-      }{
-        C \vdash \GETLOCAL~x : [] \to [t]
-      }
-
-   Here, the premise enforces that the immediate :ref:`local index <syntax-localidx>` :math:`x` exists in the context.
-   The instruction produces a value of its respective type :math:`t`
-   (and does not consume any values).
-   If :math:`C.\LOCAL[x]` does not exist then the premise does not hold,
-   and the instruction is ill-typed.
-
-   Finally, a :ref:`structured <syntax-instr-control>` instruction requires
-   a recursive rule, where the premise is itself a typing judgement:
-
-   .. math::
-      \frac{
-        C,\LABEL\,[t^?] \vdash \instr^\ast : [] \to [t^?]
-      }{
-        C \vdash \BLOCK~[t^?]~\instr^\ast~\END : [] \to [t^?]
-      }
-
-   A |BLOCK| instruction is only valid when the instruction sequence in its body is.
-   Moreover, the result type must match the block's annotation :math:`t^?`.
-   If so, then the |BLOCK| instruction has the same type as the body.
-   Inside the body an additional label of the same type is available,
-   which is expressed by locally extending the context :math:`C` with the additional label information for the premise.
+.. todo::
+   Describe
 
 
 .. [#tapl]
