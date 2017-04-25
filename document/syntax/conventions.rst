@@ -70,7 +70,7 @@ The following notation is adopted for manipulating such records:
 * :math:`r~\mbox{with}~\K{field} = x` denotes the same record as :math:`r`,
   except that the :math:`\K{field}` component is replaced with :math:`x`.
 
-The update notation for sequences and records generalizes recursively to nested components accessed by "paths" :math:`\X{pth} ::= ([i] \;| \;.\K{field})^+([i:n])^?`:
+The update notation for sequences and records generalizes recursively to nested components accessed by "paths" :math:`\X{pth} ::= ([\dots] \;| \;.\K{field})^+`:
 
 * :math:`s~\mbox{with}~[i]\X{pth} = x` denotes the same sequence as :math:`s`,
   except that the :math:`s[i]` is replaced with :math:`s[i]~\mbox{with}~\X{pth} = x`.
