@@ -25,6 +25,7 @@ The following sections group instructions into a number of different categories.
 
 .. _syntax-sx:
 .. _syntax-instr-numeric:
+.. _syntax-const:
 .. _syntax-unop:
 .. _syntax-binop:
 .. _syntax-testop:

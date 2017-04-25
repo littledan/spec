@@ -18,6 +18,7 @@
 .. Auxiliary definitions for grammars
 
 .. |production| mathdef:: \void
+.. |with| mathdef:: ~\xref{syntax/conventions}{syntax-record}{\mbox{with}}~
 
 
 .. Values, terminals and auxiliary
@@ -231,10 +232,10 @@
 .. |DEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{demote}}
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
-.. |TRAP| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{trap}}
-.. |LABEL| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{label}}
-.. |LOCAL| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{local}}
-.. |FRAME| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{frame}}
+.. |TRAP| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{trap}}
+.. |LABEL| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{label}}
+.. |FRAME| mathdef:: \xref{execution/runtime}{syntax-instr-admin}{\K{frame}}
+
 .. |INVOKE| mathdef:: \xref{execution/instructions}{syntax-instr-admin}{\K{invoke}}
 .. |INSTANTIATE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{instantiate}}
 .. |INITIALIZE| mathdef:: \xref{execution/modules}{syntax-instantiate}{\K{initialize}}
@@ -278,27 +279,29 @@
 
 .. Configurations, non-terminals
 
-.. |val| mathdef:: \xref{execution/conventions}{syntax-val}{\X{val}}
+.. |val| mathdef:: \xref{execution/runtime}{syntax-val}{\X{val}}
 
-.. |addr| mathdef:: \xref{execution/conventions}{syntax-addr}{\X{addr}}
-.. |tableaddr| mathdef:: \xref{execution/conventions}{syntax-tableaddr}{\X{tableaddr}}
-.. |memaddr| mathdef:: \xref{execution/conventions}{syntax-memaddr}{\X{memaddr}}
-.. |globaladdr| mathdef:: \xref{execution/conventions}{syntax-globaladdr}{\X{globaladdr}}
+.. |addr| mathdef:: \xref{execution/runtime}{syntax-addr}{\X{addr}}
+.. |tableaddr| mathdef:: \xref{execution/runtime}{syntax-tableaddr}{\X{tableaddr}}
+.. |memaddr| mathdef:: \xref{execution/runtime}{syntax-memaddr}{\X{memaddr}}
+.. |globaladdr| mathdef:: \xref{execution/runtime}{syntax-globaladdr}{\X{globaladdr}}
 
-.. |moduleinst| mathdef:: \xref{execution/conventions}{syntax-moduleinst}{\X{moduleinst}}
-.. |funcinst| mathdef:: \xref{execution/conventions}{syntax-funcinst}{\X{funcinst}}
-.. |tableinst| mathdef:: \xref{execution/conventions}{syntax-tableinst}{\X{tableinst}}
-.. |funcelem| mathdef:: \xref{execution/conventions}{syntax-funcelem}{\X{funcelem}}
-.. |meminst| mathdef:: \xref{execution/conventions}{syntax-meminst}{\X{meminst}}
-.. |globalinst| mathdef:: \xref{execution/conventions}{syntax-globalinst}{\X{globalinst}}
-.. |exportinst| mathdef:: \xref{execution/conventions}{syntax-exportinst}{\X{exportinst}}
+.. |moduleinst| mathdef:: \xref{execution/runtime}{syntax-moduleinst}{\X{moduleinst}}
+.. |funcinst| mathdef:: \xref{execution/runtime}{syntax-funcinst}{\X{funcinst}}
+.. |tableinst| mathdef:: \xref{execution/runtime}{syntax-tableinst}{\X{tableinst}}
+.. |funcelem| mathdef:: \xref{execution/runtime}{syntax-funcelem}{\X{funcelem}}
+.. |meminst| mathdef:: \xref{execution/runtime}{syntax-meminst}{\X{meminst}}
+.. |globalinst| mathdef:: \xref{execution/runtime}{syntax-globalinst}{\X{globalinst}}
+.. |exportinst| mathdef:: \xref{execution/runtime}{syntax-exportinst}{\X{exportinst}}
 
-.. |externval| mathdef:: \xref{execution/conventions}{syntax-externval}{\X{externval}}
-.. |externtype| mathdef:: \xref{execution/conventions}{syntax-externtype}{\X{externtype}}
+.. |externval| mathdef:: \xref{execution/runtime}{syntax-externval}{\X{externval}}
+.. |externtype| mathdef:: \xref{execution/runtime}{syntax-externtype}{\X{externtype}}
 
-.. |store| mathdef:: \xref{execution/conventions}{syntax-store}{\X{store}}
-.. |frame| mathdef:: \xref{execution/conventions}{syntax-frame}{\X{frame}}
-.. |label| mathdef:: \xref{execution/conventions}{syntax-label}{\X{label}}
+.. |store| mathdef:: \xref{execution/runtime}{syntax-store}{\X{store}}
+.. |frame| mathdef:: \xref{execution/runtime}{syntax-frame}{\X{frame}}
+.. |label| mathdef:: \xref{execution/runtime}{syntax-label}{\X{label}}
+
+.. |B| mathdef:: \xref{execution/runtime}{syntax-ctxt-block}{B}
 
 
 .. Execution, notation
@@ -308,8 +311,9 @@
 
 .. Numerics, meta functions
 
-.. |ofbits| mathdef:: \F{ofbits}
-.. |tobits| mathdef:: \F{tobits}
-.. |uint| mathdef:: \F{uint}
-.. |wrap| mathdef:: \F{wrap}
-.. |extend| mathdef:: \F{extend}
+.. |ofbits| mathdef:: \xref{execution/numerics}{aux-ofbits}{\F{ofbits}}
+.. |tobits| mathdef:: \xref{execution/numerics}{aux-tobits}{\F{tobits}}
+.. |uint| mathdef:: \xref{execution/numerics}{aux-uint}{\F{uint}}
+.. |sint| mathdef:: \xref{execution/numerics}{aux-sint}{\F{sint}}
+.. |wrap| mathdef:: \xref{execution/numerics}{aux-wrap}{\F{wrap}}
+.. |extend| mathdef:: \xref{execution/numerics}{aux-extend}{\F{extend}}

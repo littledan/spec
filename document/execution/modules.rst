@@ -5,6 +5,7 @@ Modules
    Work in progress
 
 
+.. _instantiation:
 .. _exec-module:
 .. index:: ! instantiation, module, instance, store
 
@@ -20,7 +21,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
    \tableinst &=& \{ \ELEM~(\epsilon)^{\limits.\MIN}, \MAX~\limits.\MAX \}
      & (\table.\TYPE = \limits~\elemtype) \\
    \tableaddr &=& |S.\TABLES| \\
-   S' &=& S~\mbox{with}~\TABLES = S.\TABLES~\tableinst \\
+   S' &=& S \with \TABLES = S.\TABLES~\tableinst \\
    \end{array}
 
 .. math::
@@ -30,7 +31,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
    \meminst &=& \{ \DATA~(\hex{00})^{\limits.\MIN}, \MAX~\limits.\MAX \}
      & (\mem.\TYPE = \limits) \\
    \memaddr &=& |S.\MEMS| \\
-   S' &=& S~\mbox{with}~\MEMS = S.\MEMS~\meminst \\
+   S' &=& S \with \MEMS = S.\MEMS~\meminst \\
    \end{array}
 
 .. math::
@@ -40,7 +41,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
    \globalinst &=& \{ \VALUE~(t.\CONST~0), \MUT~\mut \}
      & (\global.\TYPE = \mut~t) \\
    \globaladdr &=& |S.\GLOBALS| \\
-   S' &=& S~\mbox{with}~\GLOBALS = S.\GLOBALS~\globalinst \\
+   S' &=& S \with \GLOBALS = S.\GLOBALS~\globalinst \\
    \end{array}
 
 .. math::
@@ -169,7 +170,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
      \qquad
      \F{allocmodule}(S, \module, \externval^n) = S', \moduleinst
      \qquad
-     F = \{ \MODULE~\moduleinst, \LOCAL~\epsilon \}
+     F = \{ \MODULE~\moduleinst, \LOCALS~\epsilon \}
      \\
      (S'; F; \global.\INIT \stepto^\ast v)^\ast
      \qquad
@@ -204,7 +205,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
 
 .. math::
    \frac{
-     S' = S~\mbox{with}~\GLOBALS[\globaladdr] = v
+     S' = S \with \GLOBALS[\globaladdr] = v
    }{
      S; \INITGLOBAL~\globaladdr~v \stepto S'; \epsilon
    }
@@ -217,7 +218,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
 
 .. math::
    \frac{
-     S' = S~\mbox{with}~\TABLES[\tableaddr][o] = \moduleinst.\FUNCS[x_0]
+     S' = S \with \TABLES[\tableaddr][o] = \moduleinst.\FUNCS[x_0]
    }{
      S; \INITTABLE~\tableaddr~o~\moduleinst~(x_0~x^\ast) \stepto S'; \INITTABLE~\tableaddr~(o+1)~\moduleinst~x^\ast
    }
@@ -230,7 +231,7 @@ Given a :ref:`store <syntax-store>` :math:`S` and a :ref:`module <syntax-module>
 
 .. math::
    \frac{
-     S' = S~\mbox{with}~\MEMS[\memaddr][o] = b_0
+     S' = S \with \MEMS[\memaddr][o] = b_0
    }{
      S; \INITMEM~\memaddr~o~(b_0~b^\ast) \stepto S'; \INITMEM~\memaddr~(o+1)~b^\ast
    }
