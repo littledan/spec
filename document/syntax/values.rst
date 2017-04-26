@@ -18,7 +18,7 @@ In the abstract syntax they are represented as hexadecimal literals.
 
 .. math::
    \begin{array}{llll}
-   \production{bytes} & \byte &::=&
+   \production{byte} & \byte &::=&
      \hex{00} ~|~ \dots ~|~ \hex{FF} \\
    \end{array}
 
@@ -50,11 +50,11 @@ Different classes of *integers* with different value ranges are distinguished by
 
 .. math::
    \begin{array}{llll}
-   \production{unsigned integers} & \uN &::=&
+   \production{unsigned integer} & \uN &::=&
      0 ~|~ 1 ~|~ \dots ~|~ 2^N{-}1 \\
-   \production{signed integers} & \sN &::=&
+   \production{signed integer} & \sN &::=&
      -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
-   \production{uninterpreted integers} & \iN &::=&
+   \production{uninterpreted integer} & \iN &::=&
      \uN ~|~ \sN \\
    \end{array}
 
@@ -85,7 +85,7 @@ Floating-Point
 
 .. math::
    \begin{array}{llll}
-   \production{floating-point numbers} & \fN &::=&
+   \production{floating-point number} & \fN &::=&
      \byte^{N/8} \\
    \end{array}
 
@@ -105,7 +105,7 @@ A vector can have at most :math:`2^{32}-1` elements.
 
 .. math::
    \begin{array}{lllll}
-   \production{vectors} & \vec(A) &::=&
+   \production{vector} & \vec(A) &::=&
      A^n
      & (n < 2^{32})\\
    \end{array}
@@ -122,9 +122,9 @@ Names
 
 .. math::
    \begin{array}{llll}
-   \production{names} & \name &::=&
+   \production{name} & \name &::=&
      \codepoint^\ast \\
-   \production{code points} & \codepoint &::=&
+   \production{code point} & \codepoint &::=&
      \unicode{0000} ~|~ \dots ~|~ \unicode{D7FF} ~|~
      \unicode{E000} ~|~ \dots ~|~ \unicode{10FFFF} \\
    \end{array}

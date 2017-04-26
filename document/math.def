@@ -107,7 +107,8 @@
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
 
 .. |ANYFUNC| mathdef:: \xref{syntax/types}{syntax-elemtype}{\K{anyfunc}}
-.. |MUT| mathdef:: \xref{syntax/types}{syntax-mut}{\K{mut}}
+.. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
+.. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 
 .. |MIN| mathdef:: \K{min}
 .. |MAX| mathdef:: \K{max}
@@ -377,10 +378,7 @@
 
 .. Runtime, terminals
 
-.. |INST| mathdef:: \K{inst}
-
-.. |INSTS| mathdef:: \K{insts}
-.. |ELEMS| mathdef:: \K{elems}
+.. |MUT| mathdef:: \K{mut}
 
 
 .. Runtime, non-terminals

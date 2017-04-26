@@ -345,13 +345,13 @@ Export descriptions :math:`\exportdesc` are not classified by any type.
 
 * Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\GLOBALS[x]`.
 
-* The mutability :math:`\mut` must be |CONST|.
+* The mutability :math:`\mut` must be |MCONST|.
 
 * Then the export description is valid.
 
 .. math::
    \frac{
-     C.\GLOBALS[x] = \CONST~t
+     C.\GLOBALS[x] = \MCONST~t
    }{
      C \vdash \GLOBAL~x ~\F{ok}
    }
@@ -438,14 +438,14 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 :math:`\GLOBAL~\mut~t`
 ......................
 
-* The mutability :math:`\mut` must be |CONST|.
+* The mutability :math:`\mut` must be |MCONST|.
 
 * Then the import description is valid with type :math:`\GLOBAL~t`.
 
 .. math::
    \frac{
    }{
-     C \vdash \GLOBAL~\CONST~t : \GLOBAL~\CONST~t
+     C \vdash \GLOBAL~\MCONST~t : \GLOBAL~\MCONST~t
    }
 
 

@@ -18,7 +18,7 @@ Value Types
 
 .. math::
    \begin{array}{llll}
-   \production{value types} & \valtype &::=&
+   \production{value type} & \valtype &::=&
      \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
    \end{array}
 
@@ -50,7 +50,7 @@ which is a sequence of values.
 
 .. math::
    \begin{array}{llll}
-   \production{result types} & \resulttype &::=&
+   \production{result type} & \resulttype &::=&
      [\valtype^?] \\
    \end{array}
 
@@ -72,7 +72,7 @@ mapping a vector of parameters to a vector of results.
 
 .. math::
    \begin{array}{llll}
-   \production{function types} & \functype &::=&
+   \production{function type} & \functype &::=&
      [\vec(\valtype)] \to [\vec(\valtype)] \\
    \end{array}
 
@@ -115,7 +115,7 @@ Memory Types
 
 .. math::
    \begin{array}{llll}
-   \production{memory types} & \memtype &::=&
+   \production{memory type} & \memtype &::=&
      \limits \\
    \end{array}
 
@@ -139,9 +139,9 @@ Table Types
 
 .. math::
    \begin{array}{llll}
-   \production{table types} & \tabletype &::=&
+   \production{table type} & \tabletype &::=&
      \limits~\elemtype \\
-   \production{element types} & \elemtype &::=&
+   \production{element type} & \elemtype &::=&
      \ANYFUNC \\
    \end{array}
 
@@ -170,9 +170,9 @@ Global Types
 
 .. math::
    \begin{array}{llll}
-   \production{global types} & \globaltype &::=&
+   \production{global type} & \globaltype &::=&
      \mut^?~\valtype \\
    \production{mutability} & \mut &::=&
-     \CONST ~|~
-     \MUT \\
+     \MCONST ~|~
+     \MVAR \\
    \end{array}

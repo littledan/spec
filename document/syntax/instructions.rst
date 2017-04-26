@@ -176,7 +176,7 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
 
 .. math::
    \begin{array}{llll}
-   \production{instructions} & \instr &::=&
+   \production{instruction} & \instr &::=&
      \dots ~|~ \\&&&
      \DROP ~|~ \\&&&
      \SELECT
@@ -198,7 +198,7 @@ Variable instructions are concerned with the access to :ref:`local <syntax-local
 
 .. math::
    \begin{array}{llll}
-   \production{instructions} & \instr &::=&
+   \production{instruction} & \instr &::=&
      \dots ~|~ \\&&&
      \GETLOCAL~\localidx ~|~ \\&&&
      \SETLOCAL~\localidx ~|~ \\&&&
@@ -225,7 +225,7 @@ Instructions in this group are concerned with :ref:`linear memory <sec-memory>`.
    \begin{array}{llll}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
-   \production{instructions} & \instr &::=&
+   \production{instruction} & \instr &::=&
      \dots ~|~ \\&&&
      \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
      \K{f}\X{nn}\K{.}\LOAD~\memarg ~|~ \\&&&
@@ -277,7 +277,7 @@ Instructions in this group affect the flow of control.
 
 .. math::
    \begin{array}{llll}
-   \production{instructions} & \instr &::=&
+   \production{instruction} & \instr &::=&
      \dots ~|~ \\&&&
      \NOP ~|~ \\&&&
      \UNREACHABLE ~|~ \\&&&
@@ -350,7 +350,7 @@ Expressions
 
 .. math::
    \begin{array}{llll}
-   \production{expressions} & \expr &::=&
+   \production{expression} & \expr &::=&
      \instr^\ast~\END \\
    \end{array}
 

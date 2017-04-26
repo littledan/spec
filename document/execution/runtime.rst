@@ -1,7 +1,7 @@
 .. index:: ! runtime
 
-Runtime
--------
+Runtime Structure
+-----------------
 
 
 .. _syntax-val:
@@ -205,7 +205,7 @@ The bytes can be mutated through specific instructions, the execution of a :ref:
 .. math::
    \begin{array}{llll}
    \production{(memory instance)} & \meminst &::=&
-     \{ \DATA~\vec(\by), \MAX~\u32^? \} \\
+     \{ \DATA~\vec(\byte), \MAX~\u32^? \} \\
    \end{array}
 
 It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size, if present.

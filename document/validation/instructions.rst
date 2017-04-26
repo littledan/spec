@@ -286,13 +286,13 @@ Variable Instructions
 
 * Let :math:`\mut~t` be the :ref:`global type <syntax-globaltype>` :math:`C.\GLOBALS[x]`.
 
-* The mutability :math:`\mut` must be |MUT|.
+* The mutability :math:`\mut` must be |MVAR|.
 
 * Then the instruction is valid with type :math:`[t] \to []`.
 
 .. math::
    \frac{
-     C.\GLOBALS[x] = \MUT~t
+     C.\GLOBALS[x] = \MVAR~t
    }{
      C \vdash \SETGLOBAL~x : [t] \to []
    }

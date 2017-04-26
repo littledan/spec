@@ -171,11 +171,11 @@ Parametric Instructions
 
 1. Assert: due to :ref:`validation <valid-drop>`, a value is on the top of the stack.
 
-2. Pop the value :math:`v` from the stack.
+2. Pop the value :math:`\val` from the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   v~\DROP &\stepto& \epsilon
+   \val~\DROP &\stepto& \epsilon
    \end{array}
 
 
@@ -190,23 +190,23 @@ Parametric Instructions
 
 3. Assert: due to :ref:`validation <valid-select>`, two more values (of the same :ref:`value type <syntax-valtype>`) are on the top of the stack.
 
-4. Pop the value :math:`v_2` from the stack.
+4. Pop the value :math:`\val_2` from the stack.
 
-5. Pop the value :math:`v_1` from the stack.
+5. Pop the value :math:`\val_1` from the stack.
 
 6. If :math:`n` is not :math:`0`, then:
 
-   a. Push the value :math:`v_1` back to the stack.
+   a. Push the value :math:`\val_1` back to the stack.
 
 7. Else:
 
-   a. Push the value :math:`v_2` back to the stack.
+   a. Push the value :math:`\val_2` back to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT &\stepto& v_1
+   \val_1~\val_2~(\I32\K{.}\CONST~n)~\SELECT &\stepto& \val_1
      & (\mbox{if}~n \neq 0) \\
-   v_1~v_2~(\I32\K{.}\CONST~n)~\SELECT &\stepto& v_2
+   \val_1~\val_2~(\I32\K{.}\CONST~n)~\SELECT &\stepto& \val_2
      & (\mbox{if}~n = 0) \\
    \end{array}
 
@@ -228,14 +228,14 @@ Variable Instructions
 
 2. Assert: due to :ref:`validation <valid-get_local>`, :math:`F.\LOCALS[x]` exists.
 
-3. Let :math:`v` be the value :math:`F.\LOCALS[x]`.
+3. Let :math:`\val` be the value :math:`F.\LOCALS[x]`.
 
-4. Push the value :math:`v` to the stack.
+4. Push the value :math:`\val` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\GETLOCAL~x) &\stepto& F; v
-     & (\mbox{if}~F.\LOCALS[x] = v) \\
+   F; (\GETLOCAL~x) &\stepto& F; \val
+     & (\mbox{if}~F.\LOCALS[x] = \val) \\
    \end{array}
 
 
@@ -250,14 +250,14 @@ Variable Instructions
 
 3. Assert: due to :ref:`validation <valid-set_local>`, a value is on the top of the stack.
 
-4. Pop the value :math:`v` from the stack.
+4. Pop the value :math:`\val` from the stack.
 
-5. Replace :math:`F.\LOCALS[x]` with the value :math:`v`.
+5. Replace :math:`F.\LOCALS[x]` with the value :math:`\val`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; v~(\SETLOCAL~x) &\stepto& F'; \epsilon
-     & (\mbox{if}~F' = F \with \LOCALS[x] = v) \\
+   F; \val~(\SETLOCAL~x) &\stepto& F'; \epsilon
+     & (\mbox{if}~F' = F \with \LOCALS[x] = \val) \\
    \end{array}
 
 
@@ -268,17 +268,17 @@ Variable Instructions
 
 1. Assert: due to :ref:`validation <valid-tee_local>`, a value is on the top of the stack.
 
-2. Pop the value :math:`v` from the stack.
+2. Pop the value :math:`\val` from the stack.
 
-3. Push the value :math:`v` to the stack.
+3. Push the value :math:`\val` to the stack.
 
-4. Push the value :math:`v` to the stack.
+4. Push the value :math:`\val` to the stack.
 
 5. :ref:`Execute <exec-set_local>` the instruction :math:`(\SETLOCAL~x)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; v~(\TEELOCAL~x) &\stepto& F'; v~v~(\SETLOCAL~x)
+   F; \val~(\TEELOCAL~x) &\stepto& F'; \val~\val~(\SETLOCAL~x)
    \end{array}
 
 
@@ -297,17 +297,17 @@ Variable Instructions
 
 5. Let :math:`\X{glob}` be the :ref:`global instance <syntax-globalinst>` :math:`S.\GLOBALS[a]`.
 
-6. Let :math:`v` be the value :math:`\X{glob}.\VALUE`.
+6. Let :math:`\val` be the value :math:`\X{glob}.\VALUE`.
 
-7. Push the value :math:`v` to the stack.
+7. Push the value :math:`\val` to the stack.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\GETGLOBAL~x) &\stepto& S; F; v
+   S; F; (\GETGLOBAL~x) &\stepto& S; F; \val
    \end{array}
    \\ \qquad
-     (\mbox{if}~S.\GLOBALS[F.\MODULE.\GLOBALS[x]].\VALUE = v) \\
+     (\mbox{if}~S.\GLOBALS[F.\MODULE.\GLOBALS[x]].\VALUE = \val) \\
    \end{array}
 
 
@@ -328,17 +328,17 @@ Variable Instructions
 
 6. Assert: due to :ref:`validation <valid-set_global>`, a value is on the top of the stack.
 
-7. Pop the value :math:`v` from the stack.
+7. Pop the value :math:`\val` from the stack.
 
-8. Replace :math:`S.\GLOBALS[a]` with the value :math:`v`.
+8. Replace :math:`S.\GLOBALS[a]` with the value :math:`\val`.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; v~(\GETGLOBAL~x) &\stepto& S'; F; \epsilon
+   S; F; \val~(\SETGLOBAL~x) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
-   (\mbox{if}~S' = S \with \GLOBALS[F.\MODULE.\GLOBALS[x]].\VALUE = v) \\
+   (\mbox{if}~S' = S \with \GLOBALS[F.\MODULE.\GLOBALS[x]].\VALUE = \val) \\
    \end{array}
 
 
@@ -792,7 +792,7 @@ Control Instructions
 
 4. Assert: due to :ref:`validation <valid-br>`, there are at least :math:`n` values on the top of the stack.
 
-5. Pop the values :math:`v^n` from the stack.
+5. Pop the values :math:`\val^n` from the stack.
 
 6. Repeat :math:`l+1` times:
 
@@ -804,13 +804,13 @@ Control Instructions
 
    c. Pop the label from the stack.
 
-7. Push the values :math:`v^n` to the stack.
+7. Push the values :math:`\val^n` to the stack.
 
 8. Jump to the continuation of :math:`L`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\B^l[v^n~(\BR~l)]~\END &\stepto& v^n~\instr^\ast
+   \LABEL_n\{\instr^\ast\}~\B^l[\val^n~(\BR~l)]~\END &\stepto& \val^n~\instr^\ast
    \end{array}
 
 
@@ -881,7 +881,7 @@ Control Instructions
 
 3. Assert: due to :ref:`validation <valid-br>`, there are at least :math:`n` values on the top of the stack.
 
-4. Pop the results :math:`v^n` from the stack.
+4. Pop the results :math:`\val^n` from the stack.
 
 5. Assert: due to :ref:`validation <valid-return>`, the stack contains at least one :ref:`frame <syntax-frame>`.
 
@@ -893,13 +893,13 @@ Control Instructions
 
 8. Pop the frame from the stack.
 
-9. Push :math:`v^n` to the stack.
+9. Push :math:`\val^n` to the stack.
 
 10. Jump to the instruction after the original call.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \FRAME_n\{F\}~\B^k[v^n~\RETURN]~\END &\stepto& v^n
+   \FRAME_n\{F\}~\B^k[\val^n~\RETURN]~\END &\stepto& \val^n
    \end{array}
 
 
@@ -1015,19 +1015,19 @@ When the end of an instruction sequence is reached without a jump or trap aborti
 
 2. Assert: due to :ref:`validation <valid-instr-seq>`, there are :math:`n` values on the top of the stack.
 
-3. Pop the results :math:`v^n` from the stack.
+3. Pop the results :math:`\val^n` from the stack.
 
 4. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
 
 5. Pop the label from the stack.
 
-6. Push :math:`v^n` back to the stack.
+6. Push :math:`\val^n` back to the stack.
 
 7. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~v^n~\END &\stepto& v^n
+   \LABEL_n\{\instr^\ast\}~\val^n~\END &\stepto& \val^n
    \end{array}
 
 .. note::
@@ -1055,11 +1055,11 @@ Invocation of :ref:`Function Instance <syntax-funcinst>` :math:`f`
 
 5. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-6. Pop the values :math:`v^n` from the stack.
+6. Pop the values :math:`\val^n` from the stack.
 
-7. Let :math:`v_0^\ast` be the list of zero values of types :math:`t^\ast`.
+7. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
 
-8. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~f.\MODULE, \LOCALS~v^n~v_0^\ast \}`.
+8. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~f.\MODULE, \LOCALS~\val^n~\val_0^\ast \}`.
 
 9. Push :math:`F` to the stack.
 
@@ -1068,13 +1068,13 @@ Invocation of :ref:`Function Instance <syntax-funcinst>` :math:`f`
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   v^n~(\INVOKE~f) &\stepto& \FRAME_n\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
+   \val^n~(\INVOKE~f) &\stepto& \FRAME_n\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\mbox{if} & f.\FUNC = \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\instr^\ast~\END \} \\
      \wedge & f.\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m] \\
-     \wedge & F = \{ \MODULE~f.\MODULE, ~\LOCALS~v^n~(t.\CONST~0)^\ast \})
+     \wedge & F = \{ \MODULE~f.\MODULE, ~\LOCALS~\val^n~(t.\CONST~0)^\ast \})
      \end{array} \\
    \end{array}
 
@@ -1092,19 +1092,19 @@ When the end of a funtion is reached without a jump (|RETURN|) or trap aborting 
 
 2. Assert: due to :ref:`validation <valid-instr-seq>`, there are :math:`n` values on the top of the stack.
 
-3. Pop the results :math:`v^n` from the stack.
+3. Pop the results :math:`\val^n` from the stack.
 
 4. Assert: due to :ref:`validation <valid-func>`, the frame :math:`F` is now on the top of the stack.
 
 5. Pop the frame from the stack.
 
-6. Push :math:`v^n` back to the stack.
+6. Push :math:`\val^n` back to the stack.
 
 7. Jump to the instruction after the original call.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \FRAME_n\{F\}~v^n~\END &\stepto& v^n
+   \FRAME_n\{F\}~\val^n~\END &\stepto& \val^n
    \end{array}
 
 
