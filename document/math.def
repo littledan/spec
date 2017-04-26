@@ -387,6 +387,7 @@
 .. |val| mathdef:: \xref{execution/runtime}{syntax-val}{\X{val}}
 
 .. |addr| mathdef:: \xref{execution/runtime}{syntax-addr}{\X{addr}}
+.. |funcaddr| mathdef:: \xref{execution/runtime}{syntax-funcaddr}{\X{funcaddr}}
 .. |tableaddr| mathdef:: \xref{execution/runtime}{syntax-tableaddr}{\X{tableaddr}}
 .. |memaddr| mathdef:: \xref{execution/runtime}{syntax-memaddr}{\X{memaddr}}
 .. |globaladdr| mathdef:: \xref{execution/runtime}{syntax-globaladdr}{\X{globaladdr}}

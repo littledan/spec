@@ -824,14 +824,14 @@ Control Instructions
 
 2. Assert: due to :ref:`validation <valid-call>`, :math:`F.\MODULE.\FUNCS[x]` exists.
 
-3. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`F.\MODULE.\FUNCS[x]`.
+3. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`F.\MODULE.\FUNCS[x]`.
 
-4. :ref:`Invoke <exec-invoke>` the function instance :math:`\X{f}`.
+4. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\CALL~x) &\stepto& F; (\INVOKE~\X{f})
-     & (\mbox{if}~F.\MODULE.\FUNCS[x] = \X{f})
+   F; (\CALL~x) &\stepto& F; (\INVOKE~a)
+     & (\mbox{if}~F.\MODULE.\FUNCS[x] = a)
    \end{array}
 
 
@@ -854,7 +854,7 @@ Control Instructions
 
 7. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`F.\MODULE.\TYPES[x]`.
 
-8. Assert: due to :ref:`validation <valid-callindirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+8. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 9. Pop the value :math:`\I32.\CONST~i` from the stack.
 
@@ -866,27 +866,31 @@ Control Instructions
 
     a. Trap.
 
-12. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`\X{tab}.\ELEM[i]`.
+12. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`\X{tab}.\ELEM[i]`.
 
-13. Assert: due to :ref:`validation <valid-func>`, :math:`\X{func}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]` exists.
+13. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\FUNCS[a]` exists.
 
-14. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{func}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]`.
+14. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\FUNCS[a]`.
+
+15. Assert: due to :ref:`validation <valid-func>`, :math:`\X{func}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]` exists.
+
+16. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{func}.\MODULE.\TYPES[\X{f}.\CODE.\TYPE]`.
 
 15. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
 
     a. Trap.
 
-16. :ref:`Invoke <exec-invoke>` the function instance :math:`\X{f}`.
+17. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; (\INVOKE~f)
+   S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; (\INVOKE~a)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[i] = f \\
-     \wedge & F.\MODULE.\TYPES[x] = f.\MODULE.\TYPES[f.\CODE.\TYPE])
+     (\mbox{if} & S.\TABLES[F.\MODULE.\TABLES[0]].\ELEM[i] = a \\
+     \wedge & F.\MODULE.\TYPES[x] = f.\MODULE.\TYPES[S.\FUNCS[a].\CODE.\TYPE])
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x) &\stepto& S; F; \TRAP
@@ -954,38 +958,42 @@ Function Calls
 
 .. _exec-invoke:
 
-Invocation of :ref:`function instance <syntax-funcinst>` :math:`f`
-..................................................................
+Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
+.................................................................
 
-1. Assert: due to :ref:`validation <valid-func>`, :math:`f.\MODULE.\TYPES[f.\CODE.\TYPE]` exists.
+1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\FUNCS[a]` exists.
 
-2. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\MODULE.\TYPES[f.\CODE.\TYPE]`.
+2. Let :math:`f` be the :ref:`function instance <sytnax-funcinst>`, :math:`S.\FUNCS[a]`.
 
-3. Let :math:`t^n` be the list of :ref:`value types <syntax-valtype>` :math:`f.\CODE.\LOCALS`.
+3. Assert: due to :ref:`validation <valid-func>`, :math:`f.\MODULE.\TYPES[f.\CODE.\TYPE]` exists.
 
-4. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\CODE.\BODY`.
+4. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\MODULE.\TYPES[f.\CODE.\TYPE]`.
 
-5. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+5. Let :math:`t^n` be the list of :ref:`value types <syntax-valtype>` :math:`f.\CODE.\LOCALS`.
 
-6. Pop the values :math:`\val^n` from the stack.
+6. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\CODE.\BODY`.
 
-7. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
+7. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-8. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~f.\MODULE, \LOCALS~\val^n~\val_0^\ast \}`.
+8. Pop the values :math:`\val^n` from the stack.
 
-9. Push :math:`F` to the stack.
+9. Let :math:`\val_0^\ast` be the list of zero values of types :math:`t^\ast`.
 
-10. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
+10. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \MODULE~f.\MODULE, \LOCALS~\val^n~\val_0^\ast \}`.
+
+11. Push :math:`F` to the stack.
+
+12. :ref:`Execute <exec-block>` the instruction :math:`\BLOCK~[t_2^m]~\instr^\ast~\END`.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   \val^n~(\INVOKE~f) &\stepto& \FRAME_n\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
+   \val^n~(\INVOKE~a) &\stepto& \FRAME_n\{F\}~\BLOCK~[t_2^m]~\instr^\ast~\END~\END
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\mbox{if} & f.\CODE = \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\instr^\ast~\END \} \\
-     \wedge & f.\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m] \\
+     (\mbox{if} & S.\FUNCS[a].\CODE = \{ \TYPE~x, \LOCALS~t^\ast, \BODY~\instr^\ast~\END \} \\
+     \wedge & S.\FUNCS[a].\MODULE.\TYPES[x] = [t_1^n] \to [t_2^m] \\
      \wedge & F = \{ \MODULE~f.\MODULE, ~\LOCALS~\val^n~(t.\CONST~0)^\ast \})
      \end{array} \\
    \end{array}
@@ -993,8 +1001,8 @@ Invocation of :ref:`function instance <syntax-funcinst>` :math:`f`
 
 .. _exec-invoke-exit:
 
-Returning from a :ref:`function instance <syntax-funcinst>`
-...........................................................
+Returning from a function
+.........................
 
 When the end of a funtion is reached without a jump (|RETURN|) or trap aborting it, then the following steps are performed.
 

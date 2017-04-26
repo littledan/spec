@@ -47,14 +47,14 @@ additionally permitting integer types of small width.
 
 .. _store:
 .. _syntax-store:
-.. index:: ! store, table instance, memory instance, global instance, module
+.. index:: ! store, function instance, table instance, memory instance, global instance, module
    pair: abstract syntax; store
 
 Store
 ~~~~~
 
 The *store* represents all *mutable* global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been *allocated* during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` that have been *allocated* during the life time of the abstract machine. [#gc]_
 
 Syntactically, the store is defined as a :ref:`record <syntax-record>` listing the existing instances of each category:
 
@@ -62,16 +62,12 @@ Syntactically, the store is defined as a :ref:`record <syntax-record>` listing t
    \begin{array}{llll}
    \production{(store)} & \store &::=& \{~
      \begin{array}[t]{l@{~}ll}
+     \FUNCS & \funcinst^\ast, \\
      \TABLES & \tableinst^\ast, \\
      \MEMS & \meminst^\ast, \\
      \GLOBALS & \globalinst^\ast ~\} \\
      \end{array}
    \end{array}
-
-.. note::
-   :ref:`Function instances <syntax-funcinst>` and :ref:`module instances <syntax-moduleinst>` are not part of the store because they are not mutable.
-   In particular, there is no requirement that function instances have a unique identity, since it is not observable.
-   :ref:`Embedders <embedder>` that make the identity of function instances observable need to provide a suitable definition.
 
 .. [#gc]
    In practice, implementations may apply techniques like garbage collection to remove objects from the store that are no longer referenced.
@@ -86,13 +82,16 @@ Convention
 
 
 .. _syntax-addr:
+.. _syntax-funcaddr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
 .. _syntax-globaladdr:
-.. index:: ! address, store, table instance, memory instance, global instance
+.. index:: ! address, store, function instance, table instance, memory instance, global instance
+   pair: abstract syntax; function address
    pair: abstract syntax; table address
    pair: abstract syntax; memory address
    pair: abstract syntax; global address
+   pair: function; address
    pair: table; address
    pair: memory; address
    pair: global; address
@@ -100,13 +99,15 @@ Convention
 Addresses
 ~~~~~~~~~
 
-:ref:`Table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
+:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 
 .. math::
    \begin{array}{llll}
    \production{(address)} & \addr &::=&
      0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+   \production{(function address)} & \funcaddr &::=&
+     \addr \\
    \production{(table address)} & \tableaddr &::=&
      \addr \\
    \production{(memory address)} & \memaddr &::=&
@@ -140,7 +141,7 @@ and collects runtime representations of all entities that are imported, defined,
    \production{(module instance)} & \moduleinst &::=& \{
      \begin{array}[t]{l@{~}ll}
      \TYPES & \functype^\ast, \\
-     \FUNCS & \funcinst^\ast, \\
+     \FUNCS & \funcaddr^\ast, \\
      \TABLES & \tableaddr^\ast, \\
      \MEMS & \memaddr^\ast, \\
      \GLOBALS & \globaladdr^\ast \\
@@ -149,7 +150,7 @@ and collects runtime representations of all entities that are imported, defined,
    \end{array}
 
 Each component contains runtime instances corresponding to respective entities from the original module -- whether imported or defined -- in the order of their static :ref:`indices <syntax-index>`.
-:ref:`Table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
+:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
 
 It is an invariant of the semantics that all :ref:`export instances <syntax-exportinst>` in a given module instance have different :ref:`names <syntax-name>`.
 
@@ -177,7 +178,7 @@ The module instance is used to resolve references to other non-local definitions
 
 .. _syntax-tableinst:
 .. _syntax-funcelem:
-.. index:: ! table instance, table, function instance
+.. index:: ! table instance, table, function address
    pair: abstract syntax; table instance
    pair: table; instance
 
@@ -187,7 +188,7 @@ Table Instances
 A *table instance* is the runtime representation of a :ref:`table <syntax-table>`.
 It holds a vector of *function elements* and an optional maximum size, if one was specified at the definition site of the table.
 
-Each function element is either empty, representing an uninitialized table entry, or a :ref:`function instance <syntax-funcinst>`.
+Each function element is either empty, representing an uninitialized table entry, or a :ref:`function address <syntax-funcaddr>`.
 Function elements can be mutated through the execution of an :ref:`element segment <syntax-elem>` or by external means provided by the :ref:`embedder <embedder>`.
 
 .. math::
@@ -195,7 +196,7 @@ Function elements can be mutated through the execution of an :ref:`element segme
    \production{(table instance)} & \tableinst &::=&
      \{ \ELEM~\vec(\funcelem), \MAX~\u32^? \} \\
    \production{(function element)} & \funcelem &::=&
-     \funcinst^? \\
+     \funcaddr^? \\
    \end{array}
 
 It is an invariant of the semantics that the length of the element vector never exceeds the maximum size, if present.
@@ -269,7 +270,7 @@ It defines the export's :ref:`name <syntax-name>` and the :ref:`external value <
 
 
 .. _syntax-externval:
-.. index:: ! external value, function instance, table address, memory address, global address
+.. index:: ! external value, function address, table address, memory address, global address
    pair: abstract syntax; external value
    pair: external; value
 
@@ -277,12 +278,12 @@ External Values
 ~~~~~~~~~~~~~~~
 
 An *external value* is the runtime representation of an entity that can be imported or exported.
-It is either a :ref:`function instance <syntax-funcinst>`, or an :ref:`address <syntax-addr>` denoting a :ref:`table instance <syntax-tableinst>`, :ref:`memory instance <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` in the shared :ref:`store <syntax-store>`.
+It is an :ref:`address <syntax-addr>` denoting either a :ref:`function instance <syntax-funcinst>`, :ref:`table instance <syntax-tableinst>`, :ref:`memory instance <syntax-meminst>`, or :ref:`global instances <syntax-globalinst>` in the shared :ref:`store <syntax-store>`.
 
 .. math::
    \begin{array}{llll}
    \production{(external value)} & \externval &::=&
-     \FUNC~\funcinst ~|~
+     \FUNC~\funcaddr ~|~
      \TABLE~\tableaddr ~|~
      \MEM~\memaddr ~|~
      \GLOBAL~\globaladdr \\
@@ -297,7 +298,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
 
 .. math::
    \begin{array}{lcl}
-   \funcs(\externval^\ast) &=& [\funcinst ~|~ (\FUNC~\funcinst) \in \externval^\ast] \\
+   \funcs(\externval^\ast) &=& [\funcaddr ~|~ (\FUNC~\funcaddr) \in \externval^\ast] \\
    \tables(\externval^\ast) &=& [\tableaddr ~|~ (\TABLE~\tableaddr) \in \externval^\ast] \\
    \mems(\externval^\ast) &=& [\memaddr ~|~ (\MEM~\memaddr) \in \externval^\ast] \\
    \globals(\externval^\ast) &=& [\globaladdr ~|~ (\GLOBAL~\globaladdr) \in \externval^\ast] \\
@@ -434,8 +435,8 @@ Conventions
 .. _syntax-instr-admin:
 .. _syntax-ctxt-eval:
 .. _syntax-ctxt-label:
-.. index:: ! administrative instructions, ! label context, ! evaluation context
-   pair:: abstract syntax; administrative instructions
+.. index:: ! administrative instructions, ! block context, ! evaluation context, function, function instance, function address, label, frame, instruction, trap
+   pair:: abstract syntax; administrative instruction
 
 Administrative Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -450,7 +451,7 @@ In order to express the reduction of :ref:`traps <trap>` and :ref:`control instr
    \production{(administrative instruction)} & \instr &::=&
      \dots ~|~ \\&&&
      \TRAP ~|~ \\&&&
-     \INVOKE~\funcinst ~|~ \\&&&
+     \INVOKE~\funcaddr ~|~ \\&&&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END ~|~ \\&&&
      \FRAME_n\{\frame\}~\instr^\ast~\END ~|~ \\
    \end{array}
@@ -458,7 +459,7 @@ In order to express the reduction of :ref:`traps <trap>` and :ref:`control instr
 The |TRAP| instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction.
 
-The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`.
+The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
