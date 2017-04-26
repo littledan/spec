@@ -55,15 +55,12 @@ Different classes of *integers* with different value ranges are distinguished by
    \production{signed integer} & \sN &::=&
      -2^{N-1} ~|~ \dots ~|~ {-}1 ~|~ 0 ~|~ 1 ~|~ \dots ~|~ 2^{N-1}{-}1 \\
    \production{uninterpreted integer} & \iN &::=&
-     \uN ~|~ \sN \\
+     \uN \\
    \end{array}
 
 The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
-In those contexts, a conversion based on 2's complement will be applied for values that are out-of-range for a chosen interpretation.
-That is, semantically, when interpreted as unsigned, negative values :math:`-n` convert to :math:`2^N-n`,
-and when interpreted as signed, positive values :math:`n \geq 2^{N-1}` convert to :math:`n-2^N`.
-
-.. todo:: once there, link to definition of conversion
+In the abstract syntax, they are represented as unsigned.
+However, some operations :ref:`convert <aus-signed>` them to signed based on a 2's complement interpretation.
 
 
 Conventions

@@ -51,7 +51,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
    \begin{array}{llclll@{\qquad}l}
    \production{unsigned integer} & \BuX{N} &::=&
      n{:}\Bbyte &\Rightarrow& n & (n < 2^7 \wedge n < 2^N) \\ &&|&
-     n{:}\Bbyte~~m{:}\BuX{N-7} &\Rightarrow&
+     n{:}\Bbyte~~m{:}\BuX{(N\B{-7})} &\Rightarrow&
        2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
    \end{array}
 
@@ -63,7 +63,7 @@ As an additional constraint, the total number of bytes encoding a value of type 
    \production{signed integer} & \BsX{N} &::=&
      n{:}\Bbyte &\Rightarrow& n & (n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
      n{:}\Bbyte &\Rightarrow& n-2^7 & (2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
-     n{:}\Bbyte~~m{:}\BsX{N-7} &\Rightarrow&
+     n{:}\Bbyte~~m{:}\BsX{(N\B{-7})} &\Rightarrow&
        2^7\cdot m + (n-2^7) & (n \geq 2^7 \wedge N > 7) \\
    \end{array}
 

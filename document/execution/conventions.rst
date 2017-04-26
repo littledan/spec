@@ -3,10 +3,12 @@
 Conventions
 -----------
 
-WebAssembly code is *executed* when :ref:`instantiating <instantiation>` a module or :ref:`invoking <exec-invocation>` one of its exported functions.
+WebAssembly code is *executed* when :ref:`instantiating <instantiation>` a module or :ref:`invoking <exec-invocation>` a function on the resulting module instance.
 
-The execution behavior is defined in terms of an *abstract machine*.
-For each instruction, there is a rule that specifies the effect of its execution.
+Execution behavior is defined in terms of an *abstract machine* that models the *program state*.
+It includes a *stack*, which records operand values and control constructs, and an abstract *store* containing global state.
+
+For each instruction, there is a rule that specifies the effect of its execution on the program state.
 Furthermore, there are rules describing the instantiation of a module.
 As with :ref:`validation <validation>`, all rules are given in two *equivalent* forms:
 
@@ -18,9 +20,7 @@ As with :ref:`validation <validation>`, all rules are given in two *equivalent* 
    so that understanding of the formal notation is *not* required to read this specification.
    The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.
 
-In both cases, the rules operate on both an abstract *stack*, which records operand values and control constructs, and an abstract *store* containing global mutable state.
-
-:ref:`Store <syntax-store>`, :ref:`stack <syntax-stack>`, and other *runtime* structures, such as :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary :ref:`syntax <syntax-runtime>`.
+:ref:`Store <syntax-store>`, :ref:`stack <syntax-stack>`, and other *runtime structure*, such as :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary :ref:`syntax <syntax-runtime>`.
 
 
 .. _exec-notation-textual:
@@ -49,7 +49,9 @@ The following conventions are adopted in stating these rules.
 * The execution of an instruction may also end in a *jump* to a designated target,
   which defines the next instruction to execute.
 
-* If no trap or jump occurs, :ref:`instruction sequences <syntax-instr-seq>` are implicitly executed in order.
+* Execution can *enter* and *exit* :ref:`instruction sequences <syntax-instr-seq>` in a block-like fashion.
+
+* :ref:`Instruction sequences <syntax-instr-seq>` are implicitly executed in order, unless a trap or jump occurs.
 
 * In various places the rules contain *assertions* expressing crucial invariants about the program state, with indications why these are known to hold.
 
@@ -68,11 +70,11 @@ The formal execution rules use a standard approach for specifying operational se
 Every rule has the following general form:
 
 .. math::
-   \X{configuration} \quad\stepto\quad \X{configuration} \qquad (\X{side~condition})
+   \X{configuration} \quad\stepto\quad \X{configuration}
 
 A *configuration* is a syntactic description of a specific program state.
-Each rule specifies one possible *step* of execution, and the program state reached afterwards.
-As long as there is at most one reduction rule applicable to a given configuration, reduction is *deterministic*.
+Each rule specifies one *step* of execution.
+As long as there is at most one reduction rule applicable to a given configuration, reduction -- and thereby execution -- is *deterministic*.
 WebAssembly has only very few exceptions to this, which are noted explicitly in this specification.
 
 For WebAssembly, a configuration is a tuple :math:`(S; F; \instr^\ast)` consisting of the current :ref:`store <store>` :math:`S`, the :ref:`call frame <frame>` :math:`F` of the current function, and the sequence of :ref:`instructions <syntax-instr>` that is to be executed.
@@ -80,17 +82,17 @@ For WebAssembly, a configuration is a tuple :math:`(S; F; \instr^\ast)` consisti
 To avoid unnecessary clutter, the store :math:`S` and the frame :math:`F` are omitted from reduction rules that do not touch them.
 
 There is no separate representation of the :ref:`stack <stack>`.
-Instead, it is most convenient to represent it as part of the configuration's instruction sequence.
+Instead, it is conveniently represented as part of the configuration's instruction sequence.
 In particular, :ref:`values <syntax-val>` are defined to coincide with |CONST| instructions,
-and a sequence of |CONST| instructions acts as the operand "stack".
+and a sequence of |CONST| instructions can be interpreted as an operand "stack".
 
 .. note::
-   For example, the :ref:`reduction rule <exec-binop>` for the :math:`\I32.\ADD` instruction can be given as follows:
+   For example, the :ref:`reduction rule <exec-binop>` for the :math:`\I32.\ADD` instruction could be given as follows:
 
    .. math::
-      (\I32.\CONST~n_1)~(\I32.\CONST~n_2)~\I32.\ADD \quad\stepto\quad (\I32.\CONST~n_1 + n_2)
+      (\I32.\CONST~n_1)~(\I32.\CONST~n_2)~\I32.\ADD \quad\stepto\quad (\I32.\CONST~(n_1 + n_2) \mod 2^{32})
 
-   Per this reduction, two |CONST| instructions and the |ADD| instruction itself are removed from the instruction stream and replaced with one new |CONST| instruction.
+   Per this rule, two |CONST| instructions and the |ADD| instruction itself are removed from the instruction stream and replaced with one new |CONST| instruction.
    This can be interpreted as popping two value off the stack and pushing the result.
 
    When no result is produced, an instruction reduces to the empty sequence:
@@ -98,7 +100,7 @@ and a sequence of |CONST| instructions acts as the operand "stack".
    .. math::
       \NOP \quad\stepto\quad \epsilon
 
-:ref:`Labels <label>` and :ref:`frames <frame>` similarly become :ref:`part <syntax-instr-admin>` of the instruction sequence.
+:ref:`Labels <label>` and :ref:`frames <frame>` are similarly :ref:`defined to be part <syntax-instr-admin>` of an instruction sequence.
 
 The order of reduction is determined by the definition of an approporiate :ref:`evaluation context <syntax-ctxt-eval>`.
 
