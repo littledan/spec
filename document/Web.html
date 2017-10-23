@@ -1515,40 +1515,44 @@ compilation fails, the returned promise will be rejected with a <code class="idl
       <p>Let <var>returnValue</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise">a new promise</a></p>
      <li data-md="">
       <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment">Upon fulfillment</a> of <var>source</var> with value <var>unwrappedSource</var>:</p>
-     <li data-md="">
-      <p>Let <var>response</var> be _unwrappedSource_’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-response" id="ref-for-concept-response-response">response</a>.</p>
-     <li data-md="">
-      <p>Let <var>mimeType</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type" id="ref-for-concept-header-extract-mime-type">extracting a MIME type</a> from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>.</p>
-     <li data-md="">
-      <p>If <var>mimeType</var> is not <code>`application/wasm`</code>, reject <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a> and abort these substeps.</p>
-    </ol>
-    <p class="note" role="note"><span>Note:</span> extra parameters are not allowed, including the empty <code>`application/wasm;`</code>.</p>
-    <ol start="3">
-     <li data-md="">
-      <p>If <var>response</var> is not <a data-link-type="dfn">CORS-same-origin</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise">reject</a> <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a> and abort these substeps.</p>
-     <li data-md="">
-      <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status②">ok status</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①">reject</a> <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a> and abort these substeps.</p>
-     <li data-md="">
-      <p><a data-link-type="dfn">consume</a> <var>response</var>’s body as an <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a>, and let <var>bodyPromise</var> be the result.</p>
-    </ol>
-    <p class="note" role="note"><span>Note:</span> although it is specified here that the response is consumed entirely before _processingSteps_ proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The different is unobservable, and thus the simpler model is specified.)</p>
-    <ol start="6">
-     <li data-md="">
-      <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
       <ol>
        <li data-md="">
-        <p><a data-link-type="dfn" href="https://littledan.github.io/spec/document/JS.html#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> with <var>returnValue</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a>.</p>
+        <p>Let <var>response</var> be _unwrappedSource_’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-response" id="ref-for-concept-response-response">response</a>.</p>
+       <li data-md="">
+        <p>Let <var>mimeType</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type" id="ref-for-concept-header-extract-mime-type">extracting a MIME type</a> from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>.</p>
+       <li data-md="">
+        <p>If <var>mimeType</var> is not <code>`application/wasm`</code>, reject <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a> and abort these substeps.</p>
       </ol>
-     <li data-md="">
-      <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> <var>bodyPromise</var> with reason <var>reason</var>:</p>
-      <ol>
+      <p class="note" role="note"><span>Note:</span> extra parameters are not allowed, including the empty <code>`application/wasm;`</code>.</p>
+      <ol start="3">
        <li data-md="">
-        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise②">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
+        <p>If <var>response</var> is not <a data-link-type="dfn">CORS-same-origin</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise">reject</a> <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a> and abort these substeps.</p>
+       <li data-md="">
+        <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status②">ok status</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①">reject</a> <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a> and abort these substeps.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn">consume</a> <var>response</var>’s body as an <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a>, and let <var>bodyPromise</var> be the result.</p>
+      </ol>
+      <p class="note" role="note"><span>Note:</span> although it is specified here that the response is consumed entirely before _processingSteps_ proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The different is unobservable, and thus the simpler model is specified.)</p>
+      <ol start="6">
+       <li data-md="">
+        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
+        <ol>
+         <li data-md="">
+          <p><a data-link-type="dfn" href="https://littledan.github.io/spec/document/JS.html#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> with <var>returnValue</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a>.</p>
+        </ol>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> <var>bodyPromise</var> with reason <var>reason</var>:</p>
+        <ol>
+         <li data-md="">
+          <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise②">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
+        </ol>
       </ol>
      <li data-md="">
       <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection①">Upon rejection</a> of <var>source</var> with reason <var>reason</var>:</p>
-     <li data-md="">
-      <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise③">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
+      <ol>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise③">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
+      </ol>
      <li data-md="">
       <p>Return <var>returnValue</var>.</p>
     </ol>
