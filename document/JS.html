@@ -1576,9 +1576,16 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="compile-a-webassembly-module">compile a WebAssembly module</dfn> from a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource③">BufferSource</a></code> <var>bytes</var>, perform the following steps: 
     <ol>
      <li data-md="">
-      <p>Let <var>module</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-decode-module" id="ref-for-embed-decode-module①">decode_module</a>(_bytes_). If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-error" id="ref-for-embed-error②">error</a>, throw a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror">CompileError</a></code> exception.</p>
+      <p>Let <var>module</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-decode-module" id="ref-for-embed-decode-module①">decode_module</a>(_bytes_). If <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-error" id="ref-for-embed-error②">error</a>, return the string "CompileError".</p>
      <li data-md="">
-      <p>If <var>module</var> is not <a data-link-type="dfn" href="#valid" id="ref-for-valid①">valid</a>, throw a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror①">CompileError</a></code> exception.</p>
+      <p>If <var>module</var> is not <a data-link-type="dfn" href="#valid" id="ref-for-valid①">valid</a>, return the string "CompileError"</p>
+     <li data-md="">
+      <p>Return <var>module</var></p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="construct a WebAssembly module object">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="construct-a-webassembly-module-object">construct a WebAssembly module object</dfn> from a module <var>module</var>, perform the following steps: 
+    <ol>
      <li data-md="">
       <p>Let <var>moduleObject</var> be a new <code class="idl"><a data-link-type="idl" href="#module" id="ref-for-module③">Module</a></code> object.</p>
      <li data-md="">
@@ -1589,6 +1596,27 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
       <p>Return <var>moduleObject</var>.</p>
     </ol>
    </div>
+   <div class="algorithm" data-algorithm="asynchronously compile a WebAssembly module">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="asynchronously-compile-a-webassembly-module">asynchronously compile a WebAssembly module</dfn> from a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource④">BufferSource</a></code> <var>bytes</var>, with the promise <var>promise</var>, using optional <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source" id="ref-for-task-source">task source</a> <var>taskSource</var>, perform the following steps: 
+    <ol>
+     <li data-md="">
+      <p>In parallel, <a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module">compile the WebAssembly module</a> <var>bytes</var> and store the result as <var>module</var>.</p>
+     <li data-md="">
+      <p>When the above operation completes, queue a task to perform the following steps. If <var>taskSource</var> was provided, queue the task on that task source.</p>
+      <ol>
+       <li data-md="">
+        <p>If <var>module</var> is the string "CompileError", throw a <code class="idl"><a data-link-type="idl" href="#compileerror" id="ref-for-compileerror">CompileError</a></code> exception.</p>
+       <li data-md="">
+        <p>Otherwise,</p>
+        <ol>
+         <li data-md="">
+          <p><a data-link-type="dfn" href="#construct-a-webassembly-module-object" id="ref-for-construct-a-webassembly-module-object">Construct a WebAssembly module object</a> from <var>module</var> and let <var>moduleObject</var> be the result.</p>
+         <li data-md="">
+          <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise">Resolve</a> <var>promise</var> with <var>moduleObject</var>.</p>
+        </ol>
+      </ol>
+    </ol>
+   </div>
    <div class="algorithm" data-algorithm="compile(bytes)">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export="" id="dom-webassembly-compile"><code>compile(bytes)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
@@ -1597,13 +1625,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      <li data-md="">
       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
      <li data-md="">
-      <p>Perform the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>:</p>
-      <ol>
-       <li data-md="">
-        <p><a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module">Compile a WebAssembly module</a> from <var>stableBytes</var>, and let <var>module</var> be the result.  If this throws an exception, catch it, and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise">reject</a> <var>promise</var> with the exception.</p>
-       <li data-md="">
-        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise">Resolve</a> <var>promise</var> with <var>module</var>.</p>
-      </ol>
+      <p><a data-link-type="dfn" href="#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile a WebAssembly module</a> from <var>stableBytes</var> with <var>promise</var>.</p>
      <li data-md="">
       <p>Return <var>promise</var>.</p>
     </ol>
@@ -1748,7 +1770,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
         </ol>
       </ol>
      <li data-md="">
-      <p>Let (<var>store</var>, <var>instance</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-instantiate-module" id="ref-for-embed-instantiate-module③">instantiate_module</a>(<var>store</var>, <var>module</var>, <var>externs</var>), up through step 16 of <a data-link-type="dfn" href="https://webassembly.github.io/spec/exec/modules.html#instantiation" id="ref-for-instantiation">the instantiation algorithm</a>, but omitting execution of the start function.</p>
+      <p>Let (<var>store</var>, <var>instance</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-instantiate-module" id="ref-for-embed-instantiate-module③">instantiate_module</a>(<var>store</var>, <var>module</var>, <var>imports</var>), up through step 16 of <a data-link-type="dfn" href="https://webassembly.github.io/spec/exec/modules.html#instantiation" id="ref-for-instantiation">the instantiation algorithm</a>, but omitting execution of the start function.</p>
      <li data-md="">
       <p>If <var>instance</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-error" id="ref-for-embed-error③">error</a>, throw a <code class="idl"><a data-link-type="idl" href="#linkerror" id="ref-for-linkerror④">LinkError</a></code> exception, or other <a href="#errors">appropriate exception type</a>.</p>
      <li data-md="">
@@ -1871,36 +1893,50 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
       <p>Return <var>instanceObject</var>.</p>
     </ol>
    </div>
+   <div class="algorithm" data-algorithm="instantiate a promise of a module">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="instantiate-a-promise-of-a-module">instantiate a promise of a module</dfn> <var>promiseOfModule</var> with imports <var>importObject</var>, perform the following steps: 
+    <ol>
+     <li data-md="">
+      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise①">a new promise</a></p>
+     <li data-md="">
+      <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment">Upon fulfillment</a> of <var>promiseOfModule</var> with value <var>module</var>:</p>
+     <li data-md="">
+      <p><a data-link-type="dfn" href="#instantiate-a-webassembly-module" id="ref-for-instantiate-a-webassembly-module">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>instance</var> be the result.  If this throws an exception, catch it, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise">reject</a> <var>promise</var> with the exception, and abort these substeps.</p>
+     <li data-md="">
+      <p>Let <var>result</var> be a <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> dictionary with <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code> set to <var>module</var> and <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code> set to <var>instance</var>.</p>
+     <li data-md="">
+      <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise①">Resolve</a> <var>promise</var> with <var>result</var>.</p>
+     <li data-md="">
+      <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>promiseOfModule</var> with reason <var>reason</var>:</p>
+     <li data-md="">
+      <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①">Reject</a> <var>promise</var> with <var>reason</var>.</p>
+     <li data-md="">
+      <p>Return <var>promise</var>.</p>
+    </ol>
+    <p class="note" role="note"><span>Note:</span> It would be valid to perform certain parts of the instantiation <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>, but several parts need to happen in the event loop, including JavaScript operations to access the <var>importObject</var> and execution of the start function.</p>
+   </div>
    <div class="algorithm" data-algorithm="instantiate(bytes, importObject)">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export="" data-lt="instantiate(bytes, importObject)|instantiate(bytes)" id="dom-webassembly-instantiate"><code>instantiate(bytes, importObject)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md="">
       <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy①">copy of the bytes held by the buffer</a> <var>bytes</var>.</p>
      <li data-md="">
-      <p>Let <var>promise</var> be a <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise①">a new promise</a>.</p>
+      <p>Let <var>promiseOfModule</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a>.</p>
      <li data-md="">
-      <p>Run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
+      <p><a data-link-type="dfn" href="#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module①">Asynchronously compile a WebAssembly module</a> from <var>stableBytes</var> with <var>promiseOfModule</var>.</p>
      <li data-md="">
-      <p><a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module①">Compile a WebAssembly module</a> from <var>stableBytes</var>, and let <var>module</var> be the result.  If this throws an exception, catch it, and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①">reject</a> <var>promise</var> with the exception.</p>
-     <li data-md="">
-      <p><a data-link-type="dfn" href="#instantiate-a-webassembly-module" id="ref-for-instantiate-a-webassembly-module">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>instance</var> be the result.  If this throws an exception, catch it, and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise②">reject</a> <var>promise</var> with the exception.</p>
-     <li data-md="">
-      <p>Let <var>result</var> be a <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> dictionary with <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code> set to <var>module</var> and <code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code> set to <var>instance</var>.</p>
-     <li data-md="">
-      <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise①">Resolve</a> <var>promise</var> with <var>result</var>.</p>
-     <li data-md="">
-      <p>Return <var>promise</var>.</p>
+      <p><a data-link-type="dfn" href="#instantiate-a-promise-of-a-module" id="ref-for-instantiate-a-promise-of-a-module">instantiate a promise of a module</a> <var>promiseOfModule</var> with imports <var>importObject</var> and return the result.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="instantiate(moduleObject, importObject)">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export="" data-lt="instantiate(moduleObject, importObject)|instantiate(moduleObject)" id="dom-webassembly-instantiate-moduleobject-importobject"><code>instantiate(moduleObject, importObject)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md="">
-      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a>.</p>
+      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise③">a new promise</a>.</p>
      <li data-md="">
-      <p>Perform the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel②">in parallel</a>:</p>
+      <p>Perform the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
      <li data-md="">
-      <p><a data-link-type="dfn" href="#instantiate-a-webassembly-module" id="ref-for-instantiate-a-webassembly-module①">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>instance</var> be the result.  If this throws an exception, catch it, and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise③">reject</a> <var>promise</var> with the exception.</p>
+      <p><a data-link-type="dfn" href="#instantiate-a-webassembly-module" id="ref-for-instantiate-a-webassembly-module①">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>instance</var> be the result.  If this throws an exception, catch it, and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise②">reject</a> <var>promise</var> with the exception.</p>
      <li data-md="">
       <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise②">Resolve</a> <var>promise</var> with <var>instance</var>.</p>
      <li data-md="">
@@ -1928,7 +1964,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
   <span class="kt">required</span> <a class="n" data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind①">ImportExportKind</a> <dfn class="nv idl-code" data-dfn-for="ModuleImportDescriptor" data-dfn-type="dict-member" data-export="" data-type="ImportExportKind " id="dom-moduleimportdescriptor-kind"><code>kind</code><a class="self-link" href="#dom-moduleimportdescriptor-kind"></a></dfn>;
 };
 
-[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly">WebAssembly</a>, <a class="nv idl-code" data-link-type="extended-attribute">Contructor</a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource④">BufferSource</a> <dfn class="nv idl-code" data-dfn-for="Module/Contructor" data-dfn-type="argument" data-export="" id="dom-module-contructor-bytes"><code>bytes</code><a class="self-link" href="#dom-module-contructor-bytes"></a></dfn>), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①">Exposed</a>=(<span class="n">Window</span>, <span class="n">Worker</span>)]
+[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly">WebAssembly</a>, <a class="nv idl-code" data-link-type="extended-attribute">Contructor</a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource⑤">BufferSource</a> <dfn class="nv idl-code" data-dfn-for="Module/Contructor" data-dfn-type="argument" data-export="" id="dom-module-contructor-bytes"><code>bytes</code><a class="self-link" href="#dom-module-contructor-bytes"></a></dfn>), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①">Exposed</a>=(<span class="n">Window</span>, <span class="n">Worker</span>)]
 <span class="kt">interface</span> <dfn class="nv dfn-paneled idl-code" data-dfn-type="interface" data-export="" id="module"><code>Module</code></dfn> {
   <span class="kt">static</span> <span class="kt">sequence</span>&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleexportdescriptor" id="ref-for-dictdef-moduleexportdescriptor">ModuleExportDescriptor</a>> <a class="nv idl-code" data-link-type="method" href="#dom-module-exports" id="ref-for-dom-module-exports">exports</a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑤">Module</a> <dfn class="nv idl-code" data-dfn-for="Module/exports(module)" data-dfn-type="argument" data-export="" id="dom-module-exports-module-module"><code>module</code><a class="self-link" href="#dom-module-exports-module-module"></a></dfn>);
   <span class="kt">static</span> <span class="kt">sequence</span>&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleimportdescriptor" id="ref-for-dictdef-moduleimportdescriptor">ModuleImportDescriptor</a>> <a class="nv idl-code" data-link-type="method" href="#dom-module-imports" id="ref-for-dom-module-imports">imports</a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑥">Module</a> <dfn class="nv idl-code" data-dfn-for="Module/imports(module)" data-dfn-type="argument" data-export="" id="dom-module-imports-module-module"><code>module</code><a class="self-link" href="#dom-module-imports-module-module"></a></dfn>);
@@ -2042,7 +2078,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
      <li data-md="">
       <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy③">copy of the bytes held by the buffer</a> <var>bytes</var>.</p>
      <li data-md="">
-      <p><a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module②">compiles the WebAssembly module</a> <var>stableBytes</var> and returns the result.</p>
+      <p><a data-link-type="dfn" href="#compile-a-webassembly-module" id="ref-for-compile-a-webassembly-module①">compiles the WebAssembly module</a> <var>stableBytes</var> and returns the result.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="2.2" id="instances"><span class="secno">2.2. </span><span class="content">Instances</span><a class="self-link" href="#instances"></a></h3>
@@ -2573,11 +2609,13 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#dom-tablekind-anyfunc">"anyfunc"</a><span>, in §2.4</span>
    <li><a href="#dom-tablekind-anyfunc">anyfunc</a><span>, in §2.4</span>
    <li><a href="#associated-store">associated store</a><span>, in §4</span>
+   <li><a href="#asynchronously-compile-a-webassembly-module">asynchronously compile a WebAssembly module</a><span>, in §2</span>
    <li><a href="#dom-memory-buffer">buffer</a><span>, in §2.3</span>
    <li><a href="#call-an-exported-function">call an Exported Function</a><span>, in §2.5</span>
    <li><a href="#compile-a-webassembly-module">compile a WebAssembly module</a><span>, in §2</span>
    <li><a href="#dom-webassembly-compile">compile(bytes)</a><span>, in §2</span>
    <li><a href="#compileerror">CompileError</a><span>, in §2.7</span>
+   <li><a href="#construct-a-webassembly-module-object">construct a WebAssembly module object</a><span>, in §2</span>
    <li><a href="#create-a-memory-object">create a memory object</a><span>, in §2.3</span>
    <li><a href="#create-an-exported-function">create an Exported Function</a><span>, in §2.5</span>
    <li><a href="#create-a-table-object">create a table object</a><span>, in §2.4</span>
@@ -2620,6 +2658,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <li><a href="#typedefdef-instanceexportsmap">InstanceExportsMap</a><span>, in §2</span>
    <li><a href="#typedefdef-instanceimportsmap">InstanceImportsMap</a><span>, in §2</span>
    <li><a href="#dom-instance-instance">Instance(module, importObject)</a><span>, in §2.2</span>
+   <li><a href="#instantiate-a-promise-of-a-module">instantiate a promise of a module</a><span>, in §2</span>
    <li><a href="#instantiate-a-webassembly-module">instantiate a WebAssembly module</a><span>, in §2</span>
    <li><a href="#dom-webassembly-instantiate">instantiate(bytes)</a><span>, in §2</span>
    <li><a href="#dom-webassembly-instantiate">instantiate(bytes, importObject)</a><span>, in §2</span>
@@ -2721,6 +2760,7 @@ The particular exception here is implementation-defined in both cases.</p>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">in parallel</a>
+     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source">task source</a>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
@@ -2731,7 +2771,7 @@ The particular exception here is implementation-defined in both cases.</p>
    <li>
     <a data-link-type="biblio">[promises-guide]</a> defines the following terms:
     <ul>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">a new promise</a>
+     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise">resolve</a>
     </ul>
    <li>
     <a data-link-type="biblio">[promises-guide-1]</a> defines the following terms:
@@ -2739,6 +2779,8 @@ The particular exception here is implementation-defined in both cases.</p>
      <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">a new promise</a>
      <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">reject</a>
      <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise">resolve</a>
+     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment">upon fulfillment</a>
+     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection">upon rejection</a>
     </ul>
    <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
@@ -2851,7 +2893,7 @@ The particular exception here is implementation-defined in both cases.</p>
 
 [<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑤">Exposed</a>=(<span class="n">Window</span>,<span class="n">Worker</span>)]
 <span class="kt">namespace</span> <a class="nv" href="#namespacedef-webassembly"><code>WebAssembly</code></a> {
-  <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①"><span class="kt">boolean</span></a> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-validate" id="ref-for-dom-webassembly-validate①">validate</a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource⑤">BufferSource</a> <a class="nv" href="#dom-webassembly-validate-bytes-bytes"><code>bytes</code></a>);
+  <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①"><span class="kt">boolean</span></a> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-validate" id="ref-for-dom-webassembly-validate①">validate</a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource⑥">BufferSource</a> <a class="nv" href="#dom-webassembly-validate-bytes-bytes"><code>bytes</code></a>);
   <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module①①">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compile" id="ref-for-dom-webassembly-compile①">compile</a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource①①">BufferSource</a> <a class="nv" href="#dom-webassembly-compile-bytes-bytes"><code>bytes</code></a>);
 
   <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource②">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiate" id="ref-for-dom-webassembly-instantiate①">instantiate</a>(
@@ -2880,7 +2922,7 @@ The particular exception here is implementation-defined in both cases.</p>
   <span class="kt">required</span> <a class="n" data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind①①">ImportExportKind</a> <a class="nv" data-type="ImportExportKind " href="#dom-moduleimportdescriptor-kind"><code>kind</code></a>;
 };
 
-[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑦">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑦">WebAssembly</a>, <a class="nv idl-code" data-link-type="extended-attribute">Contructor</a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource④①">BufferSource</a> <a class="nv" href="#dom-module-contructor-bytes"><code>bytes</code></a>), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①①">Exposed</a>=(<span class="n">Window</span>, <span class="n">Worker</span>)]
+[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#LegacyNamespace" id="ref-for-LegacyNamespace⑦">LegacyNamespace</a>=<a class="n" data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑦">WebAssembly</a>, <a class="nv idl-code" data-link-type="extended-attribute">Contructor</a>(<a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#BufferSource" id="ref-for-BufferSource⑤①">BufferSource</a> <a class="nv" href="#dom-module-contructor-bytes"><code>bytes</code></a>), <a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①①">Exposed</a>=(<span class="n">Window</span>, <span class="n">Worker</span>)]
 <span class="kt">interface</span> <a class="nv" href="#module"><code>Module</code></a> {
   <span class="kt">static</span> <span class="kt">sequence</span>&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleexportdescriptor" id="ref-for-dictdef-moduleexportdescriptor①">ModuleExportDescriptor</a>> <a class="nv idl-code" data-link-type="method" href="#dom-module-exports" id="ref-for-dom-module-exports①">exports</a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑤①">Module</a> <a class="nv" href="#dom-module-exports-module-module"><code>module</code></a>);
   <span class="kt">static</span> <span class="kt">sequence</span>&lt;<a class="n" data-link-type="idl-name" href="#dictdef-moduleimportdescriptor" id="ref-for-dictdef-moduleimportdescriptor①">ModuleImportDescriptor</a>> <a class="nv idl-code" data-link-type="method" href="#dom-module-imports" id="ref-for-dom-module-imports①">imports</a>(<a class="n" data-link-type="idl-name" href="#module" id="ref-for-module⑥①">Module</a> <a class="nv" href="#dom-module-imports-module-module"><code>module</code></a>);
@@ -3004,8 +3046,20 @@ any other Web API that loads ES6 modules via URL—as part of <a href="https://g
   <aside class="dfn-panel" data-for="compile-a-webassembly-module">
    <b><a href="#compile-a-webassembly-module">#compile-a-webassembly-module</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-compile-a-webassembly-module">2. The WebAssembly Namespace</a> <a href="#ref-for-compile-a-webassembly-module①">(2)</a>
-    <li><a href="#ref-for-compile-a-webassembly-module②">2.1. Modules</a>
+    <li><a href="#ref-for-compile-a-webassembly-module">2. The WebAssembly Namespace</a>
+    <li><a href="#ref-for-compile-a-webassembly-module①">2.1. Modules</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="construct-a-webassembly-module-object">
+   <b><a href="#construct-a-webassembly-module-object">#construct-a-webassembly-module-object</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-construct-a-webassembly-module-object">2. The WebAssembly Namespace</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="asynchronously-compile-a-webassembly-module">
+   <b><a href="#asynchronously-compile-a-webassembly-module">#asynchronously-compile-a-webassembly-module</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-asynchronously-compile-a-webassembly-module">2. The WebAssembly Namespace</a> <a href="#ref-for-asynchronously-compile-a-webassembly-module①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-webassembly-compile">
@@ -3018,6 +3072,12 @@ any other Web API that loads ES6 modules via URL—as part of <a href="https://g
    <b><a href="#instantiate-a-webassembly-module">#instantiate-a-webassembly-module</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-instantiate-a-webassembly-module">2. The WebAssembly Namespace</a> <a href="#ref-for-instantiate-a-webassembly-module①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="instantiate-a-promise-of-a-module">
+   <b><a href="#instantiate-a-promise-of-a-module">#instantiate-a-promise-of-a-module</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-instantiate-a-promise-of-a-module">2. The WebAssembly Namespace</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-webassembly-instantiate">
@@ -3180,7 +3240,7 @@ any other Web API that loads ES6 modules via URL—as part of <a href="https://g
   <aside class="dfn-panel" data-for="compileerror">
    <b><a href="#compileerror">#compileerror</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-compileerror">2. The WebAssembly Namespace</a> <a href="#ref-for-compileerror①">(2)</a>
+    <li><a href="#ref-for-compileerror">2. The WebAssembly Namespace</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="linkerror">
