@@ -1783,7 +1783,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
        <li data-md="">
         <p>Let <var>name</var> be <var>nameBytes</var> <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail" id="ref-for-utf-8-decode-without-bom-or-fail">decoded as UTF-8</a>.</p>
        <li data-md="">
-        <p class="assertion">Assert: The previous operation did not fail, as <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/valid/modules.html#valid-module" id="ref-for-valid-module">valid</a>.</p>
+        <p class="assertion">Assert: <var>name</var> is not failure (<var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/valid/modules.html#valid-module" id="ref-for-valid-module">valid</a>).</p>
        <li data-md="">
         <p>Let <var>externval</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-get-export" id="ref-for-embed-get-export">get_export</a>(<var>instance</var>, <var>name</var>).</p>
        <li data-md="">
@@ -1958,7 +1958,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
        <li data-md="">
         <p>Let <var>name</var> be <var>nameBytes</var> <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail" id="ref-for-utf-8-decode-without-bom-or-fail①">decoded as UTF-8</a>.</p>
        <li data-md="">
-        <p class="assertion">Assert: The previous operation did not fail, as <var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/valid/modules.html#valid-module" id="ref-for-valid-module②">valid</a>.</p>
+        <p class="assertion">Assert: <var>name</var> is not failure (<var>module</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/valid/modules.html#valid-module" id="ref-for-valid-module②">valid</a>).</p>
        <li data-md="">
         <p>Let <var>kind</var> be the <a data-link-type="dfn" href="#string-value-of-the-extern-type" id="ref-for-string-value-of-the-extern-type">string value of the extern type</a> <var>type</var>.</p>
        <li data-md="">
@@ -2010,7 +2010,7 @@ fetch<span class="p">(</span><span class="s1">'demo.wasm'</span><span class="p">
        <li data-md="">
         <p>Let <var>name</var> be the <code>name</code> of the custom section, <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail" id="ref-for-utf-8-decode-without-bom-or-fail④">decoded as UTF-8</a>.</p>
        <li data-md="">
-        <p class="assertion">Assert: The previous operation did not fail, as <var>bytes</var> has already succeeded in <a data-link-type="dfn" href="https://webassembly.github.io/spec/appendix/embedding.html#embed-decode-module" id="ref-for-embed-decode-module①">decode_module</a>.</p>
+        <p class="assertion">Assert: <var>name</var> is not failure (<var>moduleObject</var>.[[Module]] is <a data-link-type="dfn" href="https://webassembly.github.io/spec/valid/modules.html#valid-module" id="ref-for-valid-module④">valid</a>).</p>
        <li data-md="">
         <p>If <var>name</var> equals <var>secondName</var> as string values,</p>
         <ol>
