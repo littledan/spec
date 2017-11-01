@@ -1177,7 +1177,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version a6f8b512b21a160f84ac7e0d905c2bf986576d6d" name="generator">
-  <link href="https://webassembly.github.io/spec/html/index.html" rel="canonical">
+  <link href="https://webassembly.github.io/spec/web/" rel="canonical">
 <style>/* style-md-lists */
 
             /* This is a weird hack for me not yet following the commonmark spec
@@ -1424,11 +1424,11 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2017-10-26">26 October 2017</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2017-11-01">1 November 2017</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="https://webassembly.github.io/spec/html/index.html">https://webassembly.github.io/spec/html/index.html</a>
+     <dd><a class="u-url" href="https://webassembly.github.io/spec/web/">https://webassembly.github.io/spec/web/</a>
      <dt>Issue Tracking:
      <dd><a href="https://github.com/WebAssembly/spec/issues/">GitHub</a>
      <dt class="editor">Editor:
@@ -1438,7 +1438,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 26 October 2017,
+In addition, as of 1 November 2017,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1446,20 +1446,14 @@ Parts of this work may be from another specification document.  If so, those par
   </div>
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
-   <p>This document describes the integration of WebAssembly with the broader Web Platform.</p>
+   <p>This document describes the integration of WebAssembly with the broader web platform.</p>
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
    <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
    <ol class="toc" role="directory">
-    <li>
-     <a href="#streaming-modules"><span class="secno">1</span> <span class="content">Streaming module APIs</span></a>
-     <ol class="toc">
-      <li><a href="#streaming-compliaton"><span class="secno">1.1</span> <span class="content">Streaming module compilation</span></a>
-      <li><a href="#streaming-instantiation"><span class="secno">1.2</span> <span class="content"><code>WebAssembly.instantiateStreaming</code></span></a>
-      <li><a href="#process-response"><span class="secno">1.3</span> <span class="content">Compile a potential WebAssembly response</span></a>
-     </ol>
-    <li><a href="#conventions"><span class="secno">2</span> <span class="content">Developer-facing display conventions</span></a>
+    <li><a href="#streaming-modules"><span class="secno">1</span> <span class="content">Streaming Module Compilation and Instantiation</span></a>
+    <li><a href="#conventions"><span class="secno">2</span> <span class="content">Developer-Facing Display Conventions</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -1477,39 +1471,29 @@ Parts of this work may be from another specification document.  If so, those par
   </nav>
   <main>
    <p>This document builds off of the WebAssembly specification <a data-link-type="biblio" href="#biblio-webassembly">[WEBASSEMBLY]</a> and the WebAssembly JavaScript embedding <a data-link-type="biblio" href="#biblio-wasmjs">[WASMJS]</a>.</p>
-   <h2 class="heading settled" data-level="1" id="streaming-modules"><span class="secno">1. </span><span class="content">Streaming module APIs</span><a class="self-link" href="#streaming-modules"></a></h2>
-<pre class="idl highlight def"><span class="kt">partial</span> <span class="kt">namespace</span> <a class="nv idl-code" data-link-type="namespace" href="https://littledan.github.io/spec/document/JS.html#namespacedef-webassembly" id="ref-for-namespacedef-webassembly">WebAssembly</a> {
-  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://littledan.github.io/spec/document/JS.html#module" id="ref-for-module">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming">compileStreaming</a>(<span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response">Response</a>> <dfn class="nv idl-code" data-dfn-for="WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-compilestreaming-source-source"><code>source</code><a class="self-link" href="#dom-webassembly-compilestreaming-source-source"></a></dfn>);
-  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://littledan.github.io/spec/document/JS.html#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming">instantiateStreaming</a>(
-      <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①">Response</a>> <dfn class="nv idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-instantiatestreaming-source-importobject-source"><code>source</code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-source"></a></dfn>, <span class="kt">optional</span> <a class="n" data-link-type="idl-name" href="https://littledan.github.io/spec/document/JS.html#typedefdef-instanceimportsmap" id="ref-for-typedefdef-instanceimportsmap">InstanceImportsMap</a> <dfn class="nv idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-instantiatestreaming-source-importobject-importobject"><code>importObject</code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"></a></dfn>);
+   <h2 class="heading settled" data-level="1" id="streaming-modules"><span class="secno">1. </span><span class="content">Streaming Module Compilation and Instantiation</span><a class="self-link" href="#streaming-modules"></a></h2>
+<pre class="idl highlight def"><span class="kt">partial</span> <span class="kt">namespace</span> <a class="nv idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/document/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly">WebAssembly</a> {
+  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/document/js-api/#module" id="ref-for-module">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming">compileStreaming</a>(<span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response">Response</a>> <dfn class="nv idl-code" data-dfn-for="WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-compilestreaming-source-source"><code>source</code><a class="self-link" href="#dom-webassembly-compilestreaming-source-source"></a></dfn>);
+  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/document/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming">instantiateStreaming</a>(
+      <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①">Response</a>> <dfn class="nv idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-instantiatestreaming-source-importobject-source"><code>source</code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-source"></a></dfn>, <span class="kt">optional</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object"><span class="kt">object</span></a> <dfn class="nv idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export="" id="dom-webassembly-instantiatestreaming-source-importobject-importobject"><code>importObject</code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"></a></dfn>);
 };
 </pre>
-   <h3 class="heading settled" data-level="1.1" id="streaming-compliaton"><span class="secno">1.1. </span><span class="content">Streaming module compilation</span><a class="self-link" href="#streaming-compliaton"></a></h3>
-   <p class="note" role="note"><span>Note:</span> This method was not included in the initial Wasm specification, so developers may need to provide a code path for the case where it is not present.</p>
-   <p class="note" role="note"><span>Note:</span> This function accepts a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response②">Response</a></code> object, or a
-promise for one, and compiles the resulting bytes of the response. This compilation can be performed
-in the background and in a streaming manner. If the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response③">Response</a></code> is not <a data-link-type="dfn">CORS-same-origin</a>,
-does not represent an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status">ok status</a>, or does not match the <code>application/wasm</code> MIME type, the returned promise will be rejected with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a>; if
-compilation fails, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://littledan.github.io/spec/document/JS.html#compileerror" id="ref-for-compileerror">CompileError</a></code>.</p>
    <div class="algorithm" data-algorithm="compileStreaming(source)"> The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export="" id="dom-webassembly-compilestreaming"><code>compileStreaming(source)</code></dfn> method, when invoked, returns the result of <a data-link-type="dfn" href="#compile-a-potential-webassembly-response" id="ref-for-compile-a-potential-webassembly-response">compiling a potential WebAssembly response</a> with <var>source</var>. </div>
-   <h3 class="heading settled" data-level="1.2" id="streaming-instantiation"><span class="secno">1.2. </span><span class="content"><code>WebAssembly.instantiateStreaming</code></span><a class="self-link" href="#streaming-instantiation"></a></h3>
-   <p class="note" role="note"><span>Note:</span> This method was not included in the initial Wasm specification, so developers may need to provide a code path for the case where it is not present.</p>
    <div class="algorithm" data-algorithm="instantiateStreaming(source, importObject)">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export="" data-lt="instantiateStreaming(source, importObject)|instantiateStreaming(source)" id="dom-webassembly-instantiatestreaming"><code>instantiateStreaming(source, importObject)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md="">
       <p>Let <var>promiseOfModule</var> be the result of <a data-link-type="dfn" href="#compile-a-potential-webassembly-response" id="ref-for-compile-a-potential-webassembly-response①">compiling a potential WebAssembly response</a> with <var>source</var>.</p>
      <li data-md="">
-      <p>Return the result of <a data-link-type="dfn" href="https://littledan.github.io/spec/document/JS.html#instantiate-a-promise-of-a-module" id="ref-for-instantiate-a-promise-of-a-module">instantiating the promise of a module</a> <var>promiseOfModule</var> with imports <var>importObject</var>.</p>
+      <p>Return the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/document/js-api/#instantiate-a-promise-of-a-module" id="ref-for-instantiate-a-promise-of-a-module">instantiating the promise of a module</a> <var>promiseOfModule</var> with imports <var>importObject</var>.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="1.3" id="process-response"><span class="secno">1.3. </span><span class="content">Compile a potential WebAssembly response</span><a class="self-link" href="#process-response"></a></h3>
-   <p class="note" role="note"><span>Note:</span> This algorithm accepts a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response④">Response</a></code> object, or a
-    promise for one, and compiles and instantiates the resulting bytes of the response. This compilation
-    can be performed in the background and in a streaming manner. If the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response⑤">Response</a></code> is not <a data-link-type="dfn">CORS-same-origin</a>, does not represent an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status①">ok status</a>, or does not match the <code>`application/wasm`</code> MIME type, the returned promise will be rejected with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a>; if
-    compilation or instantiation fails, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://littledan.github.io/spec/document/JS.html#compileerror" id="ref-for-compileerror①">CompileError</a></code> or other relevant error type, depending on the cause of failure.</p>
    <div class="algorithm" data-algorithm="compile a potential WebAssembly response">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="compile-a-potential-webassembly-response">compile a potential WebAssembly response</dfn> with a promise of a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response⑥">Response</a></code> <var>source</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="compile-a-potential-webassembly-response">compile a potential WebAssembly response</dfn> with a promise of a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response②">Response</a></code> <var>source</var>, perform the following steps: 
+    <p class="note" role="note"><span>Note:</span> This algorithm accepts a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response③">Response</a></code> object, or a
+    promise for one, and compiles and instantiates the resulting bytes of the response. This compilation
+    can be performed in the background and in a streaming manner. If the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response④">Response</a></code> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin">CORS-same-origin</a>, does not represent an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status">ok status</a>, or does not match the <code>`application/wasm`</code> MIME type, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code>; if
+    compilation or instantiation fails, the returned promise will be rejected with a <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/document/js-api/#compileerror" id="ref-for-compileerror">CompileError</a></code> or other relevant error type, depending on the cause of failure.</p>
     <ol>
      <li data-md="">
       <p>Let <var>returnValue</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise">a new promise</a></p>
@@ -1517,31 +1501,31 @@ compilation fails, the returned promise will be rejected with a <code class="idl
       <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment">Upon fulfillment</a> of <var>source</var> with value <var>unwrappedSource</var>:</p>
       <ol>
        <li data-md="">
-        <p>Let <var>response</var> be _unwrappedSource_’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-response" id="ref-for-concept-response-response">response</a>.</p>
+        <p>Let <var>response</var> be <var>unwrappedSource</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-response" id="ref-for-concept-response-response">response</a>.</p>
        <li data-md="">
         <p>Let <var>mimeType</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type" id="ref-for-concept-header-extract-mime-type">extracting a MIME type</a> from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>.</p>
        <li data-md="">
-        <p>If <var>mimeType</var> is not <code>`application/wasm`</code>, reject <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a> and abort these substeps.</p>
+        <p>If <var>mimeType</var> is not <code>`application/wasm`</code>, reject <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a></code> and abort these substeps.</p>
       </ol>
       <p class="note" role="note"><span>Note:</span> extra parameters are not allowed, including the empty <code>`application/wasm;`</code>.</p>
       <ol start="3">
        <li data-md="">
-        <p>If <var>response</var> is not <a data-link-type="dfn">CORS-same-origin</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise">reject</a> <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a> and abort these substeps.</p>
+        <p>If <var>response</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin①">CORS-same-origin</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a></code> and abort these substeps.</p>
        <li data-md="">
-        <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status②">ok status</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①">reject</a> <var>returnValue</var> with a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a> and abort these substeps.</p>
+        <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status①">ok status</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> and abort these substeps.</p>
        <li data-md="">
-        <p><a data-link-type="dfn">consume</a> <var>response</var>’s body as an <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a>, and let <var>bodyPromise</var> be the result.</p>
+        <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-body-consume-body" id="ref-for-concept-body-consume-body">consume</a> <var>response</var>’s body as an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a></code>, and let <var>bodyPromise</var> be the result.</p>
       </ol>
-      <p class="note" role="note"><span>Note:</span> although it is specified here that the response is consumed entirely before _processingSteps_ proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The different is unobservable, and thus the simpler model is specified.)</p>
+      <p class="note" role="note"><span>Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The different is unobservable, and thus the simpler model is specified.</p>
       <ol start="6">
        <li data-md="">
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
         <ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="https://littledan.github.io/spec/document/JS.html#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> with <var>returnValue</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a>.</p>
+          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/document/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>bodyArrayBuffer</var> with <var>returnValue</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a>.</p>
         </ol>
        <li data-md="">
-        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> <var>bodyPromise</var> with reason <var>reason</var>:</p>
+        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>bodyPromise</var> with reason <var>reason</var>:</p>
         <ol>
          <li data-md="">
           <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise②">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
@@ -1557,14 +1541,15 @@ compilation fails, the returned promise will be rejected with a <code class="idl
       <p>Return <var>returnValue</var>.</p>
     </ol>
    </div>
-   <h2 class="heading settled" data-level="2" id="conventions"><span class="secno">2. </span><span class="content">Developer-facing display conventions</span><a class="self-link" href="#conventions"></a></h2>
+   <h2 class="heading settled" data-level="2" id="conventions"><span class="secno">2. </span><span class="content">Developer-Facing Display Conventions</span><a class="self-link" href="#conventions"></a></h2>
    <p>Browsers, JavaScript engines, and offline tools have common ways of referring to
 JavaScript artifacts and language constructs. For example, locations in
 JavaScript source code are printed in stack traces or error messages, and are
 represented naturally as decimal-format lines and columns in text files. Names
 of functions and variables are taken directly from the sources. Therefore (for
-example) even though the exact format of Error.stack strings does not always
-match, the locations are easily understandable and the same across browsers.</p>
+example) even though the exact format of implementation-dependent stack trace
+strings does not always match, the locations are easily understandable and the
+same across browsers.</p>
    <p>To achive the same goal of a common representations for WebAssembly constructs, the
 following conventions are adopted.</p>
    <p>A WebAssembly location is a reference to a particular instruction in the binary, and may be
@@ -1586,7 +1571,7 @@ It has the following format:</p>
      <p>The URL field may be interpreted differently depending on the
 context. When the response-based
 instantiation <a href="#streaming-modules">API</a> is used in a
-browser, the associated URL should be used; or when the <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-ArrayBuffer" id="ref-for-idl-ArrayBuffer">ArrayBuffer</a></code>-based instantiation <a data-link-type="dfn" href="https://littledan.github.io/spec/document/JS.html#dom-webassembly-instantiate" id="ref-for-dom-webassembly-instantiate">API</a> is used, the browser should represent
+browser, the associated URL should be used; or when the <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects①">ArrayBuffer</a></code>-based instantiation <a data-link-type="dfn" href="https://webassembly.github.io/spec/document/js-api/#dom-webassembly-instantiate" id="ref-for-dom-webassembly-instantiate">API</a> is used, the browser should represent
 the location of the API call. This kind of instantiation is analagous to
 executing JavaScript using <code>eval</code>; therefore if the browser has an existing
 method to represent the location of the <code>eval</code> call it can use a similar
@@ -1598,8 +1583,10 @@ Offline tools may use a filename instead.</p>
 such as objdump (where addresses are printed in hex) and makes them visually
 distinct from JavaScript line numbers. Other numbers are represented in decimal.</p>
    </ul>
-   <p>While the <code>name</code> property of <code class="idl"><a data-link-type="idl" href="https://littledan.github.io/spec/document/JS.html#exportedfunction" id="ref-for-exportedfunction">ExportedFunction</a></code> is specified by the JS API, synthesized function names are also
-displayed in other contexts like devtool callstacks and <code>Error.stack</code>.
+   <p>While the "name" property of an <a data-link-type="dfn" href="https://webassembly.github.io/spec/document/js-api/#exported-function" id="ref-for-exported-function">Exported Function</a> instance
+is specified by the [[WASMJS|JS API]], synthesized function names are also
+displayed in other contexts like call stacks in debuggers and string representations
+of stack traces.
 If a WebAssembly module contains a <a href="BinaryEncoding.md#name-section">"name" section</a>,
 these names should be used to synthesize a function name as follows:</p>
    <ul>
@@ -1771,23 +1758,24 @@ JavaScript.</p>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#compile-a-potential-webassembly-response">compile a potential WebAssembly response</a><span>, in §1.3</span>
-   <li><a href="#dom-webassembly-compilestreaming">compileStreaming(source)</a><span>, in §1.1</span>
-   <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source)</a><span>, in §1.2</span>
-   <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source, importObject)</a><span>, in §1.2</span>
+   <li><a href="#compile-a-potential-webassembly-response">compile a potential WebAssembly response</a><span>, in §1</span>
+   <li><a href="#dom-webassembly-compilestreaming">compileStreaming(source)</a><span>, in §1</span>
+   <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source)</a><span>, in §1</span>
+   <li><a href="#dom-webassembly-instantiatestreaming">instantiateStreaming(source, importObject)</a><span>, in §1</span>
   </ul>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[ECMA-262]</a> defines the following terms:
     <ul>
-     <li><a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">arraybuffer</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">typeerror</a>
+     <li><a href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects">ArrayBuffer</a>
+     <li><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
      <li><a href="https://fetch.spec.whatwg.org/#response">Response</a>
+     <li><a href="https://fetch.spec.whatwg.org/#concept-body-consume-body">consume body</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-header-extract-mime-type">extracting a mime type</a>
      <li><a href="https://fetch.spec.whatwg.org/#concept-response-header-list">header list</a>
      <li><a href="https://fetch.spec.whatwg.org/#ok-status">ok status</a>
@@ -1797,6 +1785,7 @@ JavaScript.</p>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
+     <li><a href="https://html.spec.whatwg.org/#cors-same-origin">cors-same-origin</a>
      <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source">networking task source</a>
     </ul>
    <li>
@@ -1814,15 +1803,14 @@ JavaScript.</p>
    <li>
     <a data-link-type="biblio">[WASMJS]</a> defines the following terms:
     <ul>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#compileerror">CompileError</a>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#exportedfunction">ExportedFunction</a>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#typedefdef-instanceimportsmap">InstanceImportsMap</a>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#module">Module</a>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#namespacedef-webassembly">WebAssembly</a>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#asynchronously-compile-a-webassembly-module">asynchronously compile a webassembly module</a>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#dom-webassembly-instantiate">instantiate</a>
-     <li><a href="https://littledan.github.io/spec/document/JS.html#instantiate-a-promise-of-a-module">instantiate a promise of a module</a>
+     <li><a href="https://webassembly.github.io/spec/document/js-api/#compileerror">CompileError</a>
+     <li><a href="https://webassembly.github.io/spec/document/js-api/#module">Module</a>
+     <li><a href="https://webassembly.github.io/spec/document/js-api/#namespacedef-webassembly">WebAssembly</a>
+     <li><a href="https://webassembly.github.io/spec/document/js-api/#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>
+     <li><a href="https://webassembly.github.io/spec/document/js-api/#asynchronously-compile-a-webassembly-module">asynchronously compile a webassembly module</a>
+     <li><a href="https://webassembly.github.io/spec/document/js-api/#exported-function">exported function</a>
+     <li><a href="https://webassembly.github.io/spec/document/js-api/#dom-webassembly-instantiate">instantiate</a>
+     <li><a href="https://webassembly.github.io/spec/document/js-api/#instantiate-a-promise-of-a-module">instantiate a promise of a module</a>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
@@ -1832,7 +1820,7 @@ JavaScript.</p>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
-     <li><a href="https://heycam.github.io/webidl/#idl-ArrayBuffer">ArrayBuffer</a>
+     <li><a href="https://heycam.github.io/webidl/#idl-object">object</a>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -1849,37 +1837,36 @@ JavaScript.</p>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-wasmjs">[WASMJS]
-   <dd><a href="https://littledan.github.io/spec/js-api/">WebAssembly JS Integration Specification</a>. Draft. URL: <a href="https://littledan.github.io/spec/js-api/">https://littledan.github.io/spec/js-api/</a>
+   <dd><a href="https://webassembly.github.io/spec/document/js-api/">WebAssembly JS Integration Specification</a>. Draft. URL: <a href="https://webassembly.github.io/spec/document/js-api/">https://webassembly.github.io/spec/document/js-api/</a>
    <dt id="biblio-webassembly">[WEBASSEMBLY]
    <dd><a href="https://webassembly.github.io/spec/">WebAssembly Specification</a>. Draft. URL: <a href="https://webassembly.github.io/spec/">https://webassembly.github.io/spec/</a>
    <dt id="biblio-webidl">[WebIDL]
    <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="idl highlight def"><span class="kt">partial</span> <span class="kt">namespace</span> <a class="nv idl-code" data-link-type="namespace" href="https://littledan.github.io/spec/document/JS.html#namespacedef-webassembly" id="ref-for-namespacedef-webassembly①">WebAssembly</a> {
-  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://littledan.github.io/spec/document/JS.html#module" id="ref-for-module①">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming①">compileStreaming</a>(<span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response⑦">Response</a>> <a class="nv" href="#dom-webassembly-compilestreaming-source-source"><code>source</code></a>);
-  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://littledan.github.io/spec/document/JS.html#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming①">instantiateStreaming</a>(
-      <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①①">Response</a>> <a class="nv" href="#dom-webassembly-instantiatestreaming-source-importobject-source"><code>source</code></a>, <span class="kt">optional</span> <a class="n" data-link-type="idl-name" href="https://littledan.github.io/spec/document/JS.html#typedefdef-instanceimportsmap" id="ref-for-typedefdef-instanceimportsmap①">InstanceImportsMap</a> <a class="nv" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"><code>importObject</code></a>);
+<pre class="idl highlight def"><span class="kt">partial</span> <span class="kt">namespace</span> <a class="nv idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/document/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly①">WebAssembly</a> {
+  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/document/js-api/#module" id="ref-for-module①">Module</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming①">compileStreaming</a>(<span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response⑤">Response</a>> <a class="nv" href="#dom-webassembly-compilestreaming-source-source"><code>source</code></a>);
+  <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://webassembly.github.io/spec/document/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a>> <a class="nv idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming①">instantiateStreaming</a>(
+      <span class="kt">Promise</span>&lt;<a class="n" data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①①">Response</a>> <a class="nv" href="#dom-webassembly-instantiatestreaming-source-importobject-source"><code>source</code></a>, <span class="kt">optional</span> <a class="n idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-object" id="ref-for-idl-object①"><span class="kt">object</span></a> <a class="nv" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"><code>importObject</code></a>);
 };
 
 </pre>
   <aside class="dfn-panel" data-for="dom-webassembly-compilestreaming">
    <b><a href="#dom-webassembly-compilestreaming">#dom-webassembly-compilestreaming</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-webassembly-compilestreaming">1. Streaming module APIs</a>
+    <li><a href="#ref-for-dom-webassembly-compilestreaming">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-webassembly-instantiatestreaming">
    <b><a href="#dom-webassembly-instantiatestreaming">#dom-webassembly-instantiatestreaming</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-webassembly-instantiatestreaming">1. Streaming module APIs</a>
+    <li><a href="#ref-for-dom-webassembly-instantiatestreaming">1. Streaming Module Compilation and Instantiation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="compile-a-potential-webassembly-response">
    <b><a href="#compile-a-potential-webassembly-response">#compile-a-potential-webassembly-response</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-compile-a-potential-webassembly-response">1.1. Streaming module compilation</a>
-    <li><a href="#ref-for-compile-a-potential-webassembly-response①">1.2. WebAssembly.instantiateStreaming</a>
+    <li><a href="#ref-for-compile-a-potential-webassembly-response">1. Streaming Module Compilation and Instantiation</a> <a href="#ref-for-compile-a-potential-webassembly-response①">(2)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
