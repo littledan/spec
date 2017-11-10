@@ -1424,7 +1424,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2017-11-01">1 November 2017</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2017-11-10">10 November 2017</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1438,7 +1438,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 1 November 2017,
+In addition, as of 10 November 2017,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1508,7 +1508,7 @@ Parts of this work may be from another specification document.  If so, those par
         <p>If <var>mimeType</var> is not <code>`application/wasm`</code>, reject <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a></code> and abort these substeps.</p>
       </ol>
       <p class="note" role="note"><span>Note:</span> extra parameters are not allowed, including the empty <code>`application/wasm;`</code>.</p>
-      <ol start="3">
+      <ol start="4">
        <li data-md="">
         <p>If <var>response</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin①">CORS-same-origin</a>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a></code> and abort these substeps.</p>
        <li data-md="">
@@ -1517,7 +1517,7 @@ Parts of this work may be from another specification document.  If so, those par
         <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-body-consume-body" id="ref-for-concept-body-consume-body">consume</a> <var>response</var>’s body as an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a></code>, and let <var>bodyPromise</var> be the result.</p>
       </ol>
       <p class="note" role="note"><span>Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The different is unobservable, and thus the simpler model is specified.</p>
-      <ol start="6">
+      <ol start="7">
        <li data-md="">
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
         <ol>
