@@ -90,6 +90,43 @@ const moduleBinaryWithMemSectionAndMemImport = (() => {
     return builder.toBuffer();
 })();
 
+const complexReExportingModuleBinary = (() => {
+    let builder = new WasmModuleBuilder();
+
+    let fIndex = builder.addImport('a', 'f', kSig_i_i);
+    let gIndex = builder.addImport('a', 'g', kSig_i_v);
+    builder.addImportedMemory('c', 'd');
+    builder.addImportedTable('e', 'f');
+
+    builder.addExport('x', fIndex)
+    builder.addExport('y', gIndex)
+    builder.addExportOfKind('z', kExternalMemory, 0)
+    builder.addExportOfKind('w', kExternalTable, 0)
+
+    return builder.toBuffer();
+})();
+
+const complexTableReExportingModuleBinary = (() => {
+    let builder = new WasmModuleBuilder();
+
+    builder.addImport('a', '_', kSig_v_v);
+    let gIndex = builder.addImport('a', 'g', kSig_i_v);
+    let fIndex = builder.addImport('a', 'f', kSig_i_i);
+    let hIndex = builder
+        .addFunction('h', kSig_i_v)
+        .addBody([
+            kExprI32Const,
+            46
+        ]).index;
+
+    builder.setFunctionTableLength(3);
+    builder.appendToTable([fIndex, gIndex, hIndex]);
+    builder.addExportOfKind('tab', kExternalTable, 0);
+
+    return builder.toBuffer();
+})();
+
+
 let Module;
 let Instance;
 let CompileError;
@@ -108,6 +145,7 @@ let exportingModule;
 let exportingInstance;
 let exportsObj;
 let importingModule;
+let reExportingInstance;
 
 // Start of tests.
 
@@ -396,6 +434,7 @@ test(() => {
     assert_equals(f instanceof Function, true);
     assert_equals(f.length, 0);
     assert_equals('name' in f, true);
+    assert_equals(f.name, "0");
     assert_equals(Function.prototype.call.call(f), 42);
     assertThrows(() => new f(), TypeError);
 }, "Exported WebAssembly functions");
@@ -656,6 +695,8 @@ test(() => {
     assert_true(WebAssembly.validate(complexImportingModuleBinary));
     assert_false(WebAssembly.validate(moduleBinaryImporting2Memories));
     assert_false(WebAssembly.validate(moduleBinaryWithMemSectionAndMemImport));
+    assert_true(WebAssembly.validate(complexReExportingModuleBinary));
+    assert_true(WebAssembly.validate(complexTableReExportingModuleBinary));
 }, "'WebAssembly.validate' method");
 
 test(() => {
@@ -790,5 +831,52 @@ test(() => {
         e:{f:scratch_table},
         g:{'⚡':1}});
 }, "'WebAssembly.instantiate' function");
+
+test(() => {
+  let module = new WebAssembly.Module(complexReExportingModuleBinary);
+  let memory = new WebAssembly.Memory({initial: 0});
+  let table = new WebAssembly.Table({initial: 0, element: 'anyfunc'});
+  let instance = reExportingInstance = new WebAssembly.Instance(module, {
+    a: { f(x) { return x+1; }, g: exportingInstance.exports.f },
+    c: { d: memory },
+    e: { f: table },
+  });
+
+  assert_equals(instance.exports.x.name, "0");
+
+  // TODO(littledan): JS.md says that re-exported functions should have
+  // the same identity, but this doesn't seem to be the case in V8
+  // assert_equals(instance.exports.y, exportingInstance.exports.f);
+  assert_not_equals(instance.exports.y, exportingInstance.exports.f);
+  assert_equals(instance.exports.y.name, "1");
+
+  assert_equals(instance.exports.z, memory);
+  assert_equals(instance.exports.w, table);
+}, "Exported values have cached JS objects");
+
+test(() => {
+  let module = new WebAssembly.Module(complexTableReExportingModuleBinary);
+  let instance = new WebAssembly.Instance(module,
+      { a: { _() { }, f: reExportingInstance.exports.x, g: exportingInstance.exports.f } });
+  let table = instance.exports.tab;
+
+  // TODO(littledan): According to the specification, the new exports should be
+  // the same identity as the functions that functions that went in, but this 
+  // doesn't seem to hold in V8. Instead, new wrapper functions seem to be created.
+  assert_equals(table.get(0).name, "2");
+  assert_equals(table.get(1).name, "1");
+  assert_equals(table.get(2).name, "3");
+
+  // All the functions are new
+  assert_not_equals(table.get(0), reExportingInstance.exports.x);
+  assert_not_equals(table.get(0), exportingInstance.exports.f);
+  assert_not_equals(table.get(1), reExportingInstance.exports.x);
+  assert_not_equals(table.get(1), exportingInstance.exports.f);
+
+  // All of the functions work
+  assert_equals(table.get(0)(5), 6);
+  assert_equals(table.get(1)(), 42);
+  assert_equals(table.get(2)(), 46);
+}, "Tables export cached ");
 
 })();
